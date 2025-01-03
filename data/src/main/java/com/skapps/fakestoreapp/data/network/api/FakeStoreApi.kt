@@ -1,0 +1,16 @@
+package com.skapps.fakestoreapp.data.network.api
+
+import com.skapps.fakestoreapp.data.models.ProductsResponseDto
+import retrofit2.Response
+import retrofit2.http.GET
+import retrofit2.http.Query
+
+interface FakeStoreApi {
+
+    @GET("/products")
+    suspend fun getAllProducts(
+        @Query("limit") limit: Int,
+        @Query("skip") skip: Int
+    ): Response<ProductsResponseDto>
+
+}
