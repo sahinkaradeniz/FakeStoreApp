@@ -13,6 +13,7 @@ appcompat = "1.7.0"
 material = "1.12.0"
 hilt = "2.52"
 navigationCompose = "2.8.5"
+pagingCommon = "3.3.5"
 pagingCompose = "3.3.5"
 spotless = "6.19.0"
 ksp = "2.0.20-1.0.24"
@@ -77,6 +78,7 @@ androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text
 # Compose
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
 androidx-paging-common-android = { group = "androidx.paging", name = "paging-common-android", version.ref = "pagingCommonAndroid" }
+androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "pagingCommon" }
 
 
 [plugins]
