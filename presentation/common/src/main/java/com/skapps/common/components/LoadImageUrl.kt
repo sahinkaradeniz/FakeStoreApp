@@ -13,23 +13,20 @@ import coil.compose.AsyncImage
 @Composable
 fun LoadImageFromUrl(
     imageUrl: String,
-    contentDescription: String?,
+    contentDescription: String?=null,
     modifier: Modifier = Modifier,
     placeholder: Painter? = null,
     error: Painter? = null
 ) {
-    // Preview ortamında mı çalıştığımızı kontrol ediyoruz
     val isPreview = LocalInspectionMode.current
 
     if (isPreview) {
-        // Eğer Preview ortamındaysak, ağ isteği yerine bir yer tutucu gösteriyoruz
         Box(
             modifier = modifier
                 .fillMaxSize()
-                .background(Color.Gray) // Yer tutucu olarak gri arka plan
+                .background(Color.Gray)
         )
     } else {
-        // Normal çalışmada AsyncImage ile ağdan resim yüklüyoruz
         AsyncImage(
             model = imageUrl,
             contentDescription = contentDescription,

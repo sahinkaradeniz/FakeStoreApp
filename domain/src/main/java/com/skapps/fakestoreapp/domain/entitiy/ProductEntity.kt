@@ -9,6 +9,7 @@ data class ProductEntity(
     val id: Int,
     val images: List<String>,
     val oldPrice: Double,
+    val newPrice: Double,
     val rating: Double,
     val stock: Int,
     val thumbnail: String,

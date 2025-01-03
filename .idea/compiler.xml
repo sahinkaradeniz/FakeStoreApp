@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="11">
+      <module name="FakeStoreApp.common" target="17" />
       <module name="FakeStoreApp.presentation.base" target="17" />
     </bytecodeTargetLevel>
   </component>
