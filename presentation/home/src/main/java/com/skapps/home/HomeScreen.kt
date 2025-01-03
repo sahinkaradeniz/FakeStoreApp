@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,6 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.skapps.common.components.LoadImageFromUrl
 import com.skapps.fakestoreapp.core.theme.Purple40
 import com.skapps.fakestoreapp.domain.entitiy.ProductEntity
@@ -43,7 +46,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier.fillMaxSize(),
     onNavigateToDetail: (String) -> Unit
 ) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
@@ -56,12 +59,38 @@ fun HomeScreen(
             }
         }
     }
+    val lazyPagingItems : LazyPagingItems<ProductEntity>? = uiState.products?.collectAsLazyPagingItems()
 
-    LazyColumn {
-        items(state.products) { product ->
-            ProductItem(productEntity = product)
+    if (lazyPagingItems != null) {
+        LazyColumn(modifier = modifier) {
+
+            items(lazyPagingItems.itemCount) { index ->
+                lazyPagingItems[index]?.let { item ->
+                    ProductItem(
+                        productEntity = item,
+                        onItemClicked = { id ->
+                            onNavigateToDetail(item.id.toString())
+                        }
+                    )
+                }
+            }
+
+            when (val refreshState = lazyPagingItems.loadState.refresh) {
+                is LoadState.Loading -> item { Text("Loading...") }
+                is LoadState.Error -> item { Text("Error: ${refreshState.error.message}") }
+                else -> {}
+            }
+
+            when (val appendState = lazyPagingItems.loadState.append) {
+                is LoadState.Loading -> item { Text("Loading more...") }
+                is LoadState.Error -> item { Text("Error: ${appendState.error.message}") }
+                else -> {}
+            }
         }
+    } else {
+        Text("No data available", modifier = Modifier.padding(16.dp))
     }
+
 }
 
 @Preview(showBackground = true)
@@ -85,14 +114,16 @@ fun LazyColumnPreview(){
                     basketQuantity = 0,
                     isFavorite = false,
                     images = listOf("https://picsum.photos/200/300")
-                )
+                ),
+                onItemClicked = {}
             )
         }
     }
 }
 @Composable
 fun ProductItem(
-    productEntity: ProductEntity
+    productEntity: ProductEntity,
+    onItemClicked: (Int) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -104,8 +135,10 @@ fun ProductItem(
                 MaterialTheme.colorScheme.background,
                 RoundedCornerShape(8.dp)
             )
-            .padding(end = 16.dp, start = 8.dp),
+            .padding(end = 16.dp, start = 8.dp)
+            .clickable { onItemClicked(productEntity.id)},
         verticalAlignment = Alignment.CenterVertically,
+
     ) {
         LoadImageFromUrl(
             imageUrl = productEntity.thumbnail,

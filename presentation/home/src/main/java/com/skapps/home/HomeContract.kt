@@ -1,7 +1,9 @@
 package com.skapps.home
 
+import androidx.paging.PagingData
 import com.skapps.fakestoreapp.domain.entitiy.ProductEntity
-import com.skapps.fakestoreapp.domain.entitiy.ProductsListEntity
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 
 /**
@@ -9,14 +11,14 @@ import com.skapps.fakestoreapp.domain.entitiy.ProductsListEntity
  * Burada örnek olarak sadece ürün listesini tuttuk.
  */
 data class HomeUiState(
-    val products: List<ProductEntity> = emptyList()
+    val products: Flow<PagingData<ProductEntity>>? = null
 )
 
 /**
  * Kullanıcı veya sistem tarafından tetiklenebilecek aksiyonları tanımlar.
  */
 sealed class HomeUiAction {
-    object LoadProducts : HomeUiAction()
+    data object LoadPagedProducts : HomeUiAction()
 }
 
 /**

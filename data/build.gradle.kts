@@ -66,4 +66,8 @@ dependencies {
     implementation(libs.retrofit.converter.gson)
     implementation (libs.okhttp.logging)
 
+
+    // Paging
+    implementation(libs.androidx.paging.common.android)
+
 }
