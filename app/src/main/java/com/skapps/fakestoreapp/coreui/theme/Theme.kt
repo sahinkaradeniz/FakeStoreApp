@@ -1,4 +1,4 @@
-package com.skapps.fakestoreapp.ui.theme
+package com.skapps.fakestoreapp.coreui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -9,24 +9,17 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.skapps.fakestoreapp.core.theme.Pink40
-import com.skapps.fakestoreapp.core.theme.Pink80
-import com.skapps.fakestoreapp.core.theme.Purple40
-import com.skapps.fakestoreapp.core.theme.Purple80
-import com.skapps.fakestoreapp.core.theme.PurpleGrey40
-import com.skapps.fakestoreapp.core.theme.PurpleGrey80
-import com.skapps.fakestoreapp.core.theme.Typography
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = com.skapps.fakestoreapp.coreui.theme.Purple80,
+    secondary = com.skapps.fakestoreapp.coreui.theme.PurpleGrey80,
+    tertiary = com.skapps.fakestoreapp.coreui.theme.Pink80
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = com.skapps.fakestoreapp.coreui.theme.Purple40,
+    secondary = com.skapps.fakestoreapp.coreui.theme.PurpleGrey40,
+    tertiary = com.skapps.fakestoreapp.coreui.theme.Pink40
 )
 
 @Composable
@@ -47,7 +40,7 @@ fun FakeStoreAppTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = com.skapps.fakestoreapp.coreui.theme.Typography,
         content = content
     )
 }

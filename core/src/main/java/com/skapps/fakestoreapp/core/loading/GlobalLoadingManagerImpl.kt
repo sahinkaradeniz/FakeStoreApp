@@ -112,15 +112,17 @@ class GlobalLoadingManagerImpl @Inject constructor() : GlobalLoadingManager {
      */
     private fun updateFlowLocked() {
         val newSet = mutableSetOf<LoadingType>()
-
+        println("Global count: $globalCount")
         // Check if Global loading is active
         if (globalCount > 0) {
+            println("Global loading is active")
             newSet.add(LoadingType.Global)
         }
 
         // Check each Local key
         for ((key, count) in localMap) {
             if (count > 0) {
+                println("Local loading is active for key: $key")
                 newSet.add(LoadingType.Local(key))
             }
         }
@@ -128,10 +130,11 @@ class GlobalLoadingManagerImpl @Inject constructor() : GlobalLoadingManager {
         // Check each Partial key
         for ((key, count) in partialMap) {
             if (count > 0) {
+                println("Partial loading is active for key: $key")
                 newSet.add(LoadingType.Partial(key))
             }
         }
-
+        println("Active loadings: $newSet")
         _activeLoadings.value = newSet
     }
 }

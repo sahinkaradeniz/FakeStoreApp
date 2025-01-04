@@ -61,6 +61,7 @@ dependencies {
     // Module dependencies
     implementation(projects.domain)
     implementation(projects.core)
+    implementation(projects.coreUi)
 
     //Hilt
     implementation(libs.hilt)

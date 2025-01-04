@@ -2,6 +2,7 @@ package com.skapps.fakestoreapp.core.base
 
 import com.skapps.fakestoreapp.core.loading.GlobalLoadingManager
 import com.skapps.fakestoreapp.core.loading.LoadingType
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 
 class VMLoadingDelegate internal constructor(
@@ -41,6 +42,14 @@ class VMLoadingDelegate internal constructor(
         message: String
     ): Result<T> {
         return doWithLoading(LoadingType.Partial(message = message), block)
+    }
+
+    override suspend fun showGlobalLoading() {
+        loadingManager.show(LoadingType.Global)
+    }
+
+    override suspend fun hideGlobalLoading() {
+        loadingManager.hide(LoadingType.Global)
     }
 
 

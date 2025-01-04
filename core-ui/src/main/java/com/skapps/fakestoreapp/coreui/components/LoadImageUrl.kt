@@ -1,4 +1,4 @@
-package com.skapps.common.components
+package com.skapps.fakestoreapp.coreui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

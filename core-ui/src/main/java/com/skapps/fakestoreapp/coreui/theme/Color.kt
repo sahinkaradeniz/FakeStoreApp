@@ -1,4 +1,4 @@
-package com.skapps.fakestoreapp.core.theme
+package com.skapps.fakestoreapp.coreui.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -1,11 +1,11 @@
 package com.skapps.home
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,15 +18,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,8 +38,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.skapps.common.components.LoadImageFromUrl
-import com.skapps.fakestoreapp.core.theme.Purple40
+import com.skapps.fakestoreapp.coreui.components.LoadImageFromUrl
+import com.skapps.fakestoreapp.coreui.theme.CollectSideEffect
 import com.skapps.fakestoreapp.domain.entitiy.ProductEntity
 
 @Composable
@@ -49,55 +51,99 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        viewModel.sideEffect.collect { effect ->
+    CollectSideEffect(
+        sideEffect = viewModel.sideEffect,
+        onSideEffect = { effect ->
             when (effect) {
                 is HomeSideEffect.ShowError -> {
-                    Log.e("HomeScreen", "Error: ${effect.message}")
                     Toast.makeText(context, effect.message, Toast.LENGTH_LONG).show()
                 }
             }
         }
-    }
-    val lazyPagingItems : LazyPagingItems<ProductEntity>? = uiState.products?.collectAsLazyPagingItems()
+    )
 
-    if (lazyPagingItems != null) {
-        LazyColumn(modifier = modifier) {
-
-            items(lazyPagingItems.itemCount) { index ->
-                lazyPagingItems[index]?.let { item ->
-                    ProductItem(
-                        productEntity = item,
-                        onItemClicked = { id ->
-                            onNavigateToDetail(item.id.toString())
-                        }
+    val lazyPagingItems: LazyPagingItems<ProductEntity> = uiState.products.collectAsLazyPagingItems()
+    LazyColumn(
+        modifier = modifier.padding(8.dp),
+    ) {
+        when {
+            lazyPagingItems.loadState.refresh is LoadState.Loading -> {
+                item { BottomLoadingItem() }
+            }
+            lazyPagingItems.loadState.refresh is LoadState.Error -> {
+                val error = lazyPagingItems.loadState.refresh as LoadState.Error
+                item {
+                    ErrorItem(
+                        message = error.error.localizedMessage ?: "Unknown Error",
+                        onRetry = { lazyPagingItems.retry() }
                     )
                 }
             }
+            else -> {
+                items(lazyPagingItems.itemCount) { index ->
+                    lazyPagingItems[index]?.let { item ->
+                        ProductItem(
+                            productEntity = item,
+                            onItemClicked = { itemIndex ->
+                                onNavigateToDetail(lazyPagingItems[itemIndex]?.id.toString())
+                            }
+                        )
+                    }
+                }
 
-            when (val refreshState = lazyPagingItems.loadState.refresh) {
-                is LoadState.Loading -> item { Text("Loading...") }
-                is LoadState.Error -> item { Text("Error: ${refreshState.error.message}") }
-                else -> {}
-            }
-
-            when (val appendState = lazyPagingItems.loadState.append) {
-                is LoadState.Loading -> item { Text("Loading more...") }
-                is LoadState.Error -> item { Text("Error: ${appendState.error.message}") }
-                else -> {}
+                lazyPagingItems.apply {
+                    when (loadState.append) {
+                        is LoadState.Loading -> {
+                            item { BottomLoadingItem() }
+                        }
+                        is LoadState.Error -> {
+                            val appendError = loadState.append as LoadState.Error
+                            item {
+                                ErrorItem(
+                                    message = appendError.error.localizedMessage ?: "Unknown Error",
+                                    onRetry = { retry() }
+                                )
+                            }
+                        }
+                        else -> Unit
+                    }
+                }
             }
         }
-    } else {
-        Text("No data available", modifier = Modifier.padding(16.dp))
     }
+}
 
+@Composable
+fun BottomLoadingItem() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
+}
+@Composable
+fun ErrorItem(message: String, onRetry: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = message, color = Color.Red, modifier = Modifier.padding(bottom = 8.dp))
+        Button(onClick = onRetry) {
+            Text(stringResource(R.string.retry))
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun LazyColumnPreview(){
     LazyColumn {
-        items(10) {
+        items(2) {
             ProductItem(
                 productEntity = ProductEntity(
                     id = 1,
@@ -118,8 +164,16 @@ fun LazyColumnPreview(){
                 onItemClicked = {}
             )
         }
+
+        item {
+          BottomLoadingItem()
+        }
+        item {
+            ErrorItem(message = "Failed to load more items", onRetry = {})
+        }
     }
 }
+
 @Composable
 fun ProductItem(
     productEntity: ProductEntity,
@@ -136,9 +190,8 @@ fun ProductItem(
                 RoundedCornerShape(8.dp)
             )
             .padding(end = 16.dp, start = 8.dp)
-            .clickable { onItemClicked(productEntity.id)},
+            .clickable { onItemClicked(productEntity.id) },
         verticalAlignment = Alignment.CenterVertically,
-
     ) {
         LoadImageFromUrl(
             imageUrl = productEntity.thumbnail,
@@ -186,9 +239,8 @@ fun PriceRow(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.End,
     ) {
-        Text(text = price, fontSize = 16.sp, color = Purple40)
+        Text(text = price, fontSize = 16.sp, color = com.skapps.fakestoreapp.coreui.theme.Purple40)
         Spacer(modifier = Modifier.height(12.dp))
-        Text(text = oldPrice)
+        Text(text = oldPrice, color = Color.Gray)
     }
 }
-

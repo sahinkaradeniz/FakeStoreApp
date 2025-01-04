@@ -69,6 +69,7 @@ dependencies {
     implementation(projects.data)
     implementation(projects.navigation)
     implementation(projects.core)
+    implementation(projects.coreUi)
 
 
     // Navigation

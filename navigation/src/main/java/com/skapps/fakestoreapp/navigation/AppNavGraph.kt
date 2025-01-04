@@ -10,20 +10,11 @@ fun AppNavGraph(
     startDestination: String = HomeDestination.route
 ) {
     NavHost(navController = navController, startDestination = startDestination) {
-
-        // 1) Home
         homeScreen(
             onNavigateToDetail = { productId ->
-
                 navController.navigate(DetailDestination.createRoute(productId))
             }
         )
-
-        // 2) Detail
         detailScreen()
-
-        // 3) İstersen başka feature nav graph fonksiyonları:
-        // profileScreen(...)
-        // cartScreen(...)
     }
 }

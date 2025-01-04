@@ -10,6 +10,7 @@ import com.skapps.fakestoreapp.domain.usecase.GetAllProductsUseCase
 import com.skapps.fakestoreapp.domain.usecase.GetPagedProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,7 +20,7 @@ class HomeViewModel @Inject constructor(
     loadingManager: GlobalLoadingManager,
     private val getPagedProductsUseCase: GetPagedProductsUseCase
 ) : BaseViewModel<HomeUiState, HomeUiAction, HomeSideEffect>(
-    initialState = HomeUiState(),
+    initialState = HomeUiState(products = emptyFlow()),
     globalLoadingManager = loadingManager
 ) {
 
@@ -29,17 +30,24 @@ class HomeViewModel @Inject constructor(
 
     override fun onAction(uiAction: HomeUiAction) {
         when (uiAction) {
-            is HomeUiAction.LoadPagedProducts -> loadPagedProducts()
+            is HomeUiAction.LoadPagedProducts ->{
+                loadPagedProducts()
+            }
         }
     }
 
     private fun loadPagedProducts() {
         viewModelScope.launch {
-            val flow = getPagedProductsUseCase(pageSize = 10)
+            val flow = getPagedProductsUseCase(pageSize = PRODUCTS_PAGE_SIZE)
                 .distinctUntilChanged()
                 .cachedIn(viewModelScope)
             updateUiState { copy(products = flow) }
         }
+    }
+
+
+    companion object {
+       private const val PRODUCTS_PAGE_SIZE = 10
     }
 
 }

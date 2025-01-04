@@ -22,4 +22,8 @@ interface VMLoading {
         block: suspend () -> T,
         message: String
     ): Result<T>
+
+    suspend fun showGlobalLoading()
+
+    suspend fun hideGlobalLoading()
 }

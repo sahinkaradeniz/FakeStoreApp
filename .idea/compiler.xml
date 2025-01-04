@@ -4,6 +4,7 @@
     <bytecodeTargetLevel target="1.8">
       <module name="FakeStoreApp.common" target="17" />
       <module name="FakeStoreApp.presentation.base" target="17" />
+      <module name="FakeStoreApp.presentation.common" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

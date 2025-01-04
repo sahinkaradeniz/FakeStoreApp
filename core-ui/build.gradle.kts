@@ -1,14 +1,12 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kspPlugin)
-    alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.compose)
 }
 
 android {
-    namespace = "com.skapps.home"
-    compileSdk = 35
+    namespace = "com.skapps.fakestoreapp.coreui"
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 26
@@ -33,9 +31,6 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
@@ -47,31 +42,11 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    // Navigation
-    implementation(libs.androidx.navigation.compose)
 
     // Compose
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.material3)
     implementation(platform(libs.androidx.compose.bom))
-
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.tooling.preview)
-
-    // Module dependencies
-    implementation(projects.domain)
-    implementation(projects.coreUi)
-    implementation(projects.core)
-    implementation(projects.coreUi)
-
-    //Hilt
-    implementation(libs.hilt)
-    ksp(libs.hilt.compiler)
-    implementation(libs.androidx.hilt.navigation.compose)
-
-    // Paging
-    implementation (libs.androidx.paging.compose)
-    implementation(libs.androidx.paging.common.android)
-
+    implementation(libs.coil.compose)
 }
