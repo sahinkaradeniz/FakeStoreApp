@@ -13,4 +13,12 @@ interface FakeStoreApi {
         @Query("skip") skip: Int
     ): Response<ProductsResponseDto>
 
+
+    @GET("/products/search")
+    suspend fun search(
+        @Query("q") query: String,
+        @Query("limit") limit: Int,
+        @Query("skip") skip: Int
+    ): Response<ProductsResponseDto>
+
 }

@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -63,7 +64,7 @@ class MainActivity : ComponentActivity() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.5f)),
+                .background(Color.Black.copy(alpha = 0.3f)),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(color = Color.White)
@@ -73,7 +74,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun PartialLoading(message: String?) {
         Box(
-            modifier = Modifier
+            modifier = Modifier.fillMaxWidth()
                 .padding(16.dp)
                 .background(Color.Gray.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp)),
             contentAlignment = Alignment.Center

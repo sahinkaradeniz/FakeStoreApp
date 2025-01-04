@@ -1,4 +1,4 @@
-package com.skapps.fakestoreapp.domain.usecase
+package com.skapps.fakestoreapp.domain.usecase.getallproducts
 
 import com.skapps.fakestoreapp.domain.ApiErrorModel
 import com.skapps.fakestoreapp.domain.IResult

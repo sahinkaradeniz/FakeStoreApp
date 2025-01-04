@@ -8,6 +8,4 @@ abstract class BaseViewModel<UiState, UiAction, SideEffect>(
     initialState: UiState,
     globalLoadingManager: GlobalLoadingManager
 ) : ViewModel(), VMLoading by vmLoading(globalLoadingManager),
-    MVI<UiState, UiAction, SideEffect> by mvi(initialState) {
-
-}
+    MVI<UiState, UiAction, SideEffect> by mvi(initialState)

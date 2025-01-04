@@ -10,4 +10,12 @@ class ProductsListRemoteSourceImpl @Inject constructor(
     override suspend fun getAllProducts(limit: Int, skip: Int): Response<ProductsResponseDto> {
         return fakeStoreApi.getAllProducts(limit, skip)
     }
+
+    override suspend fun search(
+        query: String,
+        limit: Int,
+        skip: Int
+    ): Response<ProductsResponseDto> {
+        return fakeStoreApi.search(query, limit, skip)
+    }
 }

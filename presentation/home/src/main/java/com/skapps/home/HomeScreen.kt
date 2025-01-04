@@ -18,10 +18,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -45,7 +50,6 @@ import com.skapps.fakestoreapp.domain.entitiy.ProductEntity
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
-    modifier: Modifier = Modifier.fillMaxSize(),
     onNavigateToDetail: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -58,18 +62,44 @@ fun HomeScreen(
                 is HomeSideEffect.ShowError -> {
                     Toast.makeText(context, effect.message, Toast.LENGTH_LONG).show()
                 }
+
+                is HomeSideEffect.NavigateToProductDetail -> {
+                    onNavigateToDetail(effect.id)
+                }
             }
         }
     )
 
-    val lazyPagingItems: LazyPagingItems<ProductEntity> = uiState.products.collectAsLazyPagingItems()
-    LazyColumn(
-        modifier = modifier.padding(8.dp),
-    ) {
+    Column {
+        SearchView(
+            query = uiState.query,
+            onQueryChange = { query ->
+                viewModel.onSearchQueryChanged(query)
+            },
+            clearQuery = {
+                viewModel.onClearSearch()
+            }
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        ProductList(
+            lazyPagingItems = if (uiState.isSearchMode) uiState.searchResults.collectAsLazyPagingItems() else uiState.products.collectAsLazyPagingItems(),
+            onItemClicked = { productId ->
+                viewModel.onProductClicked(productId.toString())
+            }
+        )
+    }
+
+
+}
+
+@Composable
+fun ProductList(lazyPagingItems: LazyPagingItems<ProductEntity>, onItemClicked: (Int?) -> Unit) {
+    LazyColumn {
         when {
             lazyPagingItems.loadState.refresh is LoadState.Loading -> {
                 item { BottomLoadingItem() }
             }
+
             lazyPagingItems.loadState.refresh is LoadState.Error -> {
                 val error = lazyPagingItems.loadState.refresh as LoadState.Error
                 item {
@@ -79,13 +109,14 @@ fun HomeScreen(
                     )
                 }
             }
+
             else -> {
                 items(lazyPagingItems.itemCount) { index ->
                     lazyPagingItems[index]?.let { item ->
                         ProductItem(
                             productEntity = item,
                             onItemClicked = { itemIndex ->
-                                onNavigateToDetail(lazyPagingItems[itemIndex]?.id.toString())
+                                onItemClicked(lazyPagingItems[itemIndex]?.id)
                             }
                         )
                     }
@@ -96,6 +127,7 @@ fun HomeScreen(
                         is LoadState.Loading -> {
                             item { BottomLoadingItem() }
                         }
+
                         is LoadState.Error -> {
                             val appendError = loadState.append as LoadState.Error
                             item {
@@ -105,12 +137,48 @@ fun HomeScreen(
                                 )
                             }
                         }
+
                         else -> Unit
                     }
                 }
             }
         }
     }
+}
+
+
+@Composable
+fun SearchView(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    clearQuery: () -> Unit
+) {
+    TextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp)
+            .padding(horizontal = 12.dp),
+        value = query,
+        onValueChange = onQueryChange,
+        label = { Text(text = "Search") },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = "Search"
+            )
+        },
+        trailingIcon = {
+            if (query.isNotEmpty()) {
+                Icon(
+                    imageVector = Icons.Default.Clear,
+                    contentDescription = "Clear",
+                    modifier = Modifier.clickable {
+                        clearQuery()
+                    }
+                )
+            }
+        }
+    )
 }
 
 @Composable
@@ -124,6 +192,7 @@ fun BottomLoadingItem() {
         CircularProgressIndicator()
     }
 }
+
 @Composable
 fun ErrorItem(message: String, onRetry: () -> Unit) {
     Column(
@@ -139,9 +208,10 @@ fun ErrorItem(message: String, onRetry: () -> Unit) {
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
-fun LazyColumnPreview(){
+fun LazyColumnPreview() {
     LazyColumn {
         items(2) {
             ProductItem(
@@ -166,7 +236,7 @@ fun LazyColumnPreview(){
         }
 
         item {
-          BottomLoadingItem()
+            BottomLoadingItem()
         }
         item {
             ErrorItem(message = "Failed to load more items", onRetry = {})

@@ -4,4 +4,5 @@ import retrofit2.Response
 
 interface ProductsListRemoteSource {
     suspend fun getAllProducts(limit: Int, skip: Int): Response<ProductsResponseDto>
+    suspend fun search(query: String, limit: Int, skip: Int): Response<ProductsResponseDto>
 }
