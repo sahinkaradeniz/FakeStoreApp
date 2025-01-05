@@ -16,15 +16,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -43,7 +48,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.skapps.fakestoreapp.coreui.components.IconTextButton
 import com.skapps.fakestoreapp.coreui.components.LoadImageFromUrl
+import com.skapps.fakestoreapp.coreui.components.SearchView
 import com.skapps.fakestoreapp.coreui.theme.CollectSideEffect
 import com.skapps.fakestoreapp.domain.entitiy.ProductEntity
 
@@ -71,13 +78,19 @@ fun HomeScreen(
     )
 
     Column {
-        SearchView(
+        SearchFilterSortBar(
             query = uiState.query,
             onQueryChange = { query ->
                 viewModel.onSearchQueryChanged(query)
             },
             clearQuery = {
                 viewModel.onClearSearch()
+            },
+            onFilterClicked = {
+
+            },
+            onSortClicked = {
+
             }
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -90,6 +103,67 @@ fun HomeScreen(
     }
 
 
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SearchViewPreview() {
+    SearchFilterSortBar(
+        query = "Search Query",
+        onQueryChange = {},
+        clearQuery = {},
+        onFilterClicked = {},
+        onSortClicked = {}
+    )
+}
+
+@Composable
+fun SearchFilterSortBar(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    clearQuery: () -> Unit,
+    onFilterClicked: () -> Unit,
+    onSortClicked: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        SearchView(
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 12.dp).align(Alignment.CenterVertically),
+            query = query,
+            onQueryChange = { query ->
+                onQueryChange(query)
+            },
+            clearQuery = {
+                clearQuery()
+            },
+            searchHint = stringResource(R.string.search),
+            clearContentDescription = stringResource(R.string.clear)
+        )
+        IconTextButton(
+            label = stringResource(R.string.filter),
+            icon = Icons.Default.Menu,
+            onClick = { onFilterClicked() },
+            spacing = 4.dp,
+            modifier = Modifier.height(48.dp).wrapContentWidth().align(Alignment.CenterVertically),
+            textSize = 12.sp,
+            iconSize = 16.dp
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        IconTextButton(
+            label = stringResource(R.string.sort),
+            icon = Icons.Default.KeyboardArrowDown,
+            onClick = { onSortClicked() },
+            spacing = 4.dp,
+            modifier =Modifier.height(48.dp).wrapContentWidth().padding(end = 8.dp).align(Alignment.CenterVertically),
+            textSize = 12.sp
+        )
+    }
 }
 
 @Composable
@@ -147,39 +221,6 @@ fun ProductList(lazyPagingItems: LazyPagingItems<ProductEntity>, onItemClicked: 
 }
 
 
-@Composable
-fun SearchView(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    clearQuery: () -> Unit
-) {
-    TextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 12.dp)
-            .padding(horizontal = 12.dp),
-        value = query,
-        onValueChange = onQueryChange,
-        label = { Text(text = "Search") },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = "Search"
-            )
-        },
-        trailingIcon = {
-            if (query.isNotEmpty()) {
-                Icon(
-                    imageVector = Icons.Default.Clear,
-                    contentDescription = "Clear",
-                    modifier = Modifier.clickable {
-                        clearQuery()
-                    }
-                )
-            }
-        }
-    )
-}
 
 @Composable
 fun BottomLoadingItem() {
