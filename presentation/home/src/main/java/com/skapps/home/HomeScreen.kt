@@ -26,14 +26,17 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,6 +56,7 @@ import com.skapps.fakestoreapp.coreui.components.LoadImageFromUrl
 import com.skapps.fakestoreapp.coreui.components.SearchView
 import com.skapps.fakestoreapp.coreui.theme.CollectSideEffect
 import com.skapps.fakestoreapp.domain.entitiy.ProductEntity
+import com.skapps.fakestoreapp.domain.entitiy.SortType
 
 @Composable
 fun HomeScreen(
@@ -77,6 +81,16 @@ fun HomeScreen(
         }
     )
 
+    if (uiState.isSortSheetVisible) {
+        SortBottomSheet(
+            onDismiss = {
+                viewModel.onSortClicked()
+            },
+            onOptionSelected = { selectedOption ->
+                viewModel.onSortOptionSelected(selectedOption)
+            }
+        )
+    }
     Column {
         SearchFilterSortBar(
             query = uiState.query,
@@ -90,7 +104,7 @@ fun HomeScreen(
 
             },
             onSortClicked = {
-
+                viewModel.onSortClicked()
             }
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -100,10 +114,10 @@ fun HomeScreen(
                 viewModel.onProductClicked(productId.toString())
             }
         )
+
     }
-
-
 }
+
 
 @Preview(showBackground = true)
 @Composable
@@ -134,7 +148,8 @@ fun SearchFilterSortBar(
         SearchView(
             modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = 12.dp).align(Alignment.CenterVertically),
+                .padding(horizontal = 12.dp)
+                .align(Alignment.CenterVertically),
             query = query,
             onQueryChange = { query ->
                 onQueryChange(query)
@@ -150,7 +165,11 @@ fun SearchFilterSortBar(
             icon = Icons.Default.Menu,
             onClick = { onFilterClicked() },
             spacing = 4.dp,
-            modifier = Modifier.height(48.dp).wrapContentWidth().align(Alignment.CenterVertically),
+            modifier = Modifier
+                .height(48.dp)
+                .wrapContentWidth()
+                .padding(top = 4.dp)
+                .align(Alignment.CenterVertically),
             textSize = 12.sp,
             iconSize = 16.dp
         )
@@ -160,7 +179,11 @@ fun SearchFilterSortBar(
             icon = Icons.Default.KeyboardArrowDown,
             onClick = { onSortClicked() },
             spacing = 4.dp,
-            modifier =Modifier.height(48.dp).wrapContentWidth().padding(end = 8.dp).align(Alignment.CenterVertically),
+            modifier = Modifier
+                .height(48.dp)
+                .wrapContentWidth()
+                .padding(end = 8.dp, top = 4.dp)
+                .align(Alignment.CenterVertically),
             textSize = 12.sp
         )
     }
@@ -353,5 +376,36 @@ fun PriceRow(
         Text(text = price, fontSize = 16.sp, color = com.skapps.fakestoreapp.coreui.theme.Purple40)
         Spacer(modifier = Modifier.height(12.dp))
         Text(text = oldPrice, color = Color.Gray)
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SortBottomSheet(
+    onDismiss: () -> Unit,
+    onOptionSelected: (SortType) -> Unit
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text("Sıralama Seçenekleri", style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            SortType.values().forEach { option ->
+                Text(
+                    text = option.name,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onOptionSelected(option)
+                        }
+                        .padding(vertical = 8.dp)
+                )
+            }
+        }
     }
 }

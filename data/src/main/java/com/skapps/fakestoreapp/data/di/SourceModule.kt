@@ -1,6 +1,7 @@
 package com.skapps.fakestoreapp.data.di
 
 import com.skapps.fakestoreapp.data.datasource.paging.ProductsPagingSource
+import com.skapps.fakestoreapp.data.datasource.paging.SearchProductsPagingSource
 import com.skapps.fakestoreapp.data.datasource.remote.ProductsListRemoteSource
 import com.skapps.fakestoreapp.data.datasource.remote.ProductsListRemoteSourceImpl
 import dagger.Binds
@@ -26,5 +27,10 @@ object PagingModule {
     @Provides
     fun provideProductsPagingSource(productsListRemoteSource: ProductsListRemoteSource): ProductsPagingSource {
         return ProductsPagingSource(productsListRemoteSource)
+    }
+
+    @Provides
+    fun provideSearchProductsPagingSource(productsListRemoteSource: ProductsListRemoteSource): SearchProductsPagingSource {
+        return SearchProductsPagingSource(productsListRemoteSource)
     }
 }

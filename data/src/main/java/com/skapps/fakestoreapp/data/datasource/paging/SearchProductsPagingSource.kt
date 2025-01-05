@@ -5,12 +5,15 @@ import androidx.paging.PagingState
 import com.skapps.fakestoreapp.data.datasource.remote.ProductsListRemoteSource
 import com.skapps.fakestoreapp.data.mapper.toEntity
 import com.skapps.fakestoreapp.domain.entitiy.ProductEntity
+import com.skapps.fakestoreapp.domain.entitiy.SortType
 import javax.inject.Inject
 
 class SearchProductsPagingSource @Inject constructor(
     private val productsListRemoteSource: ProductsListRemoteSource,
-    private val query: String
 ):PagingSource<Int, ProductEntity>() {
+    var query: String = ""
+    var sortType:SortType = SortType.NONE
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ProductEntity> {
         return try {
             val currentPage = params.key ?: 1
@@ -23,10 +26,21 @@ class SearchProductsPagingSource @Inject constructor(
                 return LoadResult.Error(Exception("Failed to load products"))
             }
 
+
+            val rawProducts = response.body()?.toEntity()?.products.orEmpty()
+
+            val sortedProducts = when (sortType) {
+                SortType.NONE -> rawProducts
+                SortType.PRICE_ASC -> rawProducts.sortedBy { it.newPrice }
+                SortType.PRICE_DESC -> rawProducts.sortedByDescending { it.newPrice }
+                SortType.TITLE_ASC -> rawProducts.sortedBy { it.title }
+                SortType.TITLE_DESC -> rawProducts.sortedByDescending { it.title }
+            }
+
             LoadResult.Page(
-                data = response.body()?.toEntity()?.products.orEmpty(),
+                data = sortedProducts,
                 prevKey = if (currentPage == 1) null else currentPage - 1,
-                nextKey = if (response.body()?.toEntity()?.products?.isEmpty() == true) null else currentPage + 1
+                nextKey = if (sortedProducts.isEmpty()) null else currentPage + 1
             )
         } catch (e: Exception) {
             LoadResult.Error(e)

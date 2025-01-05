@@ -2,6 +2,7 @@ package com.skapps.home
 
 import androidx.paging.PagingData
 import com.skapps.fakestoreapp.domain.entitiy.ProductEntity
+import com.skapps.fakestoreapp.domain.entitiy.SortType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emptyFlow
@@ -9,17 +10,21 @@ import kotlinx.coroutines.flow.emptyFlow
 
 data class HomeUiState(
     val products: Flow<PagingData<ProductEntity>>,
+    val searchResults: Flow<PagingData<ProductEntity>>,
     val query: String = "",
     val isSearchMode: Boolean = false,
-    val searchResults: Flow<PagingData<ProductEntity>>
+    val isSortSheetVisible: Boolean = false,
+    val selectedSortOption: SortType = SortType.NONE
 )
 
 
-sealed class HomeUiAction {
-    data object LoadPagedProducts : HomeUiAction()
-    data class ProductClicked(val id: String) : HomeUiAction()
-    data class SearchQueryChanged(val query: String) : HomeUiAction()
-    data object ClearSearch : HomeUiAction()
+sealed interface HomeUiAction {
+    data object LoadPagedProducts : HomeUiAction
+    data class ProductClicked(val id: String) : HomeUiAction
+    data class SearchQueryChanged(val query: String) : HomeUiAction
+    data object ClearSearch : HomeUiAction
+    data object SortClicked : HomeUiAction
+    data class SortOptionSelected(val sortOption: SortType) : HomeUiAction
 }
 
 sealed class HomeSideEffect {
