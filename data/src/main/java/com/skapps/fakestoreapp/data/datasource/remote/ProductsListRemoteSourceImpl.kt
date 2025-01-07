@@ -7,8 +7,14 @@ import javax.inject.Inject
 class ProductsListRemoteSourceImpl @Inject constructor(
     private val fakeStoreApi: FakeStoreApi
 ):ProductsListRemoteSource{
-    override suspend fun getAllProducts(limit: Int, skip: Int): Response<ProductsResponseDto> {
-        return fakeStoreApi.getAllProducts(limit, skip)
+
+    override suspend fun getAllProducts(
+        limit: Int,
+        skip: Int,
+        sortBy: String?,
+        order: String?
+    ): Response<ProductsResponseDto> {
+        return fakeStoreApi.getAllProducts(limit, skip, sortBy, order)
     }
 
     override suspend fun search(

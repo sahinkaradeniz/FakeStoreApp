@@ -10,7 +10,9 @@ interface FakeStoreApi {
     @GET("/products")
     suspend fun getAllProducts(
         @Query("limit") limit: Int,
-        @Query("skip") skip: Int
+        @Query("skip") skip: Int,
+        @Query("sortBy") sortBy: String?=null,
+        @Query("order") order: String?=null
     ): Response<ProductsResponseDto>
 
 

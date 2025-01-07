@@ -91,6 +91,7 @@ fun HomeScreen(
             }
         )
     }
+
     Column {
         SearchFilterSortBar(
             query = uiState.query,
@@ -392,7 +393,7 @@ fun SortBottomSheet(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            Text("Sıralama Seçenekleri", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.sorting_options), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
 
             SortType.values().forEach { option ->

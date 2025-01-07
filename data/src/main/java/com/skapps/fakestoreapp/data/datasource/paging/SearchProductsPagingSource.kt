@@ -6,14 +6,14 @@ import com.skapps.fakestoreapp.data.datasource.remote.ProductsListRemoteSource
 import com.skapps.fakestoreapp.data.mapper.toEntity
 import com.skapps.fakestoreapp.domain.entitiy.ProductEntity
 import com.skapps.fakestoreapp.domain.entitiy.SortType
-import javax.inject.Inject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 
-class SearchProductsPagingSource @Inject constructor(
+class SearchProductsPagingSource @AssistedInject constructor(
     private val productsListRemoteSource: ProductsListRemoteSource,
+    @Assisted private val query: String,
+    @Assisted private val sortType: SortType
 ):PagingSource<Int, ProductEntity>() {
-    var query: String = ""
-    var sortType:SortType = SortType.NONE
-
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ProductEntity> {
         return try {
             val currentPage = params.key ?: 1
@@ -25,10 +25,7 @@ class SearchProductsPagingSource @Inject constructor(
             if (!response.isSuccessful) {
                 return LoadResult.Error(Exception("Failed to load products"))
             }
-
-
             val rawProducts = response.body()?.toEntity()?.products.orEmpty()
-
             val sortedProducts = when (sortType) {
                 SortType.NONE -> rawProducts
                 SortType.PRICE_ASC -> rawProducts.sortedBy { it.newPrice }

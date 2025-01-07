@@ -3,6 +3,6 @@ import com.skapps.fakestoreapp.data.models.ProductsResponseDto
 import retrofit2.Response
 
 interface ProductsListRemoteSource {
-    suspend fun getAllProducts(limit: Int, skip: Int): Response<ProductsResponseDto>
+    suspend fun getAllProducts(limit: Int, skip: Int,sortBy: String?=null,order: String?=null): Response<ProductsResponseDto>
     suspend fun search(query: String, limit: Int, skip: Int): Response<ProductsResponseDto>
 }

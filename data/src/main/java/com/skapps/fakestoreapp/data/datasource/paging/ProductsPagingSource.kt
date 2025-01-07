@@ -6,16 +6,30 @@ import com.skapps.fakestoreapp.data.datasource.remote.ProductsListRemoteSource
 import com.skapps.fakestoreapp.data.mapper.toEntity
 import com.skapps.fakestoreapp.domain.entitiy.ProductEntity
 import com.skapps.fakestoreapp.domain.entitiy.SortType
-import javax.inject.Inject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 
-class ProductsPagingSource @Inject constructor(
+class ProductsPagingSource @AssistedInject constructor(
+    @Assisted private val sortType: SortType,
     private val productsListRemoteSource: ProductsListRemoteSource
 ) : PagingSource<Int, ProductEntity>() {
-    var sortType: SortType = SortType.NONE
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ProductEntity> {
         return try {
             val currentPage = params.key ?: 1
-            val response = productsListRemoteSource.getAllProducts(skip = currentPage, limit = params.loadSize)
+
+            val (sortBy, order) = when (sortType) {
+                SortType.NONE -> null to null
+                SortType.PRICE_ASC -> "price" to "asc"
+                SortType.PRICE_DESC -> "price" to "desc"
+                SortType.TITLE_ASC -> "title" to "asc"
+                SortType.TITLE_DESC -> "title" to "desc"
+            }
+
+            val response = productsListRemoteSource.getAllProducts(
+                skip = currentPage, limit = params.loadSize, sortBy = sortBy,
+                order = order
+            )
             if (!response.isSuccessful) {
                 return LoadResult.Error(Exception("Failed to load products"))
             }
@@ -44,4 +58,5 @@ class ProductsPagingSource @Inject constructor(
             page?.prevKey?.plus(1) ?: page?.nextKey?.minus(1)
         }
     }
+
 }
