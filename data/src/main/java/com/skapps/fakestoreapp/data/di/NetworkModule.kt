@@ -65,7 +65,7 @@ object NetworkModule {
         okHttpClient: OkHttpClient
     ): FakeStoreApi {
         return Retrofit.Builder()
-            .baseUrl("https://dummyjson.com")
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

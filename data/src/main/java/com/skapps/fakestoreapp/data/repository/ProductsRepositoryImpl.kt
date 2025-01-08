@@ -36,7 +36,7 @@ class ProductsRepositoryImpl @Inject constructor(
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {
-                searchProductsPagingSource.create(params.query, params.sortType)
+                searchProductsPagingSource.create(params.query)
             }
         ).flow
     }

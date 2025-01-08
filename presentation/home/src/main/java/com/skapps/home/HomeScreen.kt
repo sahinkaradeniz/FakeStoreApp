@@ -106,7 +106,8 @@ fun HomeScreen(
             },
             onSortClicked = {
                 viewModel.onSortClicked()
-            }
+            },
+            isSearchMode = uiState.isSearchMode
         )
         Spacer(modifier = Modifier.height(16.dp))
         ProductList(
@@ -128,7 +129,8 @@ fun SearchViewPreview() {
         onQueryChange = {},
         clearQuery = {},
         onFilterClicked = {},
-        onSortClicked = {}
+        onSortClicked = {},
+        isSearchMode = false
     )
 }
 
@@ -138,7 +140,8 @@ fun SearchFilterSortBar(
     onQueryChange: (String) -> Unit,
     clearQuery: () -> Unit,
     onFilterClicked: () -> Unit,
-    onSortClicked: () -> Unit
+    onSortClicked: () -> Unit,
+    isSearchMode: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -161,32 +164,34 @@ fun SearchFilterSortBar(
             searchHint = stringResource(R.string.search),
             clearContentDescription = stringResource(R.string.clear)
         )
-        IconTextButton(
-            label = stringResource(R.string.filter),
-            icon = Icons.Default.Menu,
-            onClick = { onFilterClicked() },
-            spacing = 4.dp,
-            modifier = Modifier
-                .height(48.dp)
-                .wrapContentWidth()
-                .padding(top = 4.dp)
-                .align(Alignment.CenterVertically),
-            textSize = 12.sp,
-            iconSize = 16.dp
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        IconTextButton(
-            label = stringResource(R.string.sort),
-            icon = Icons.Default.KeyboardArrowDown,
-            onClick = { onSortClicked() },
-            spacing = 4.dp,
-            modifier = Modifier
-                .height(48.dp)
-                .wrapContentWidth()
-                .padding(end = 8.dp, top = 4.dp)
-                .align(Alignment.CenterVertically),
-            textSize = 12.sp
-        )
+        if (!isSearchMode) {
+            IconTextButton(
+                label = stringResource(R.string.filter),
+                icon = Icons.Default.Menu,
+                onClick = { onFilterClicked() },
+                spacing = 4.dp,
+                modifier = Modifier
+                    .height(48.dp)
+                    .wrapContentWidth()
+                    .padding(top = 4.dp)
+                    .align(Alignment.CenterVertically),
+                textSize = 12.sp,
+                iconSize = 16.dp
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            IconTextButton(
+                label = stringResource(R.string.sort),
+                icon = Icons.Default.KeyboardArrowDown,
+                onClick = { onSortClicked() },
+                spacing = 4.dp,
+                modifier = Modifier
+                    .height(48.dp)
+                    .wrapContentWidth()
+                    .padding(end = 8.dp, top = 4.dp)
+                    .align(Alignment.CenterVertically),
+                textSize = 12.sp
+            )
+        }
     }
 }
 

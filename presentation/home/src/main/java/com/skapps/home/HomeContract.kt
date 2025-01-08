@@ -29,5 +29,5 @@ sealed interface HomeUiAction {
 
 sealed class HomeSideEffect {
     data class ShowError(val message: String) : HomeSideEffect()
-    data class NavigateToProductDetail(val id:String) : HomeSideEffect()
+    data class NavigateToProductDetail(val id: String) : HomeSideEffect()
 }

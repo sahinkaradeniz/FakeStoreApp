@@ -45,7 +45,11 @@ class HomeViewModel @Inject constructor(
 
             is HomeUiAction.SearchQueryChanged -> {
                 updateUiState { copy(query = uiAction.query) }
-                if (uiAction.query.length > 1) {
+                if (uiAction.query.isEmpty()) {
+                    onAction(HomeUiAction.ClearSearch)
+                } else if (uiAction.query.length == 1) {
+                    updateUiState { copy(isSearchMode = true) }
+                } else if (uiAction.query.length > 1) {
                     loadSearchResults(uiAction.query)
                 }
             }
@@ -83,8 +87,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val flow = searchPagedProductsUseCase(
                 SearchPagedProductParams(
-                    query = query,
-                    sortType = uiState.value.selectedSortOption
+                    query = query
                 )
             ).distinctUntilChanged()
                 .cachedIn(viewModelScope)

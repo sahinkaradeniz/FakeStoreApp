@@ -4,9 +4,9 @@ import com.skapps.fakestoreapp.data.network.api.FakeStoreApi
 import retrofit2.Response
 import javax.inject.Inject
 
-class ProductsListRemoteSourceImpl @Inject constructor(
+class ProductsRemoteSourceImpl @Inject constructor(
     private val fakeStoreApi: FakeStoreApi
-):ProductsListRemoteSource{
+):ProductsRemoteSource{
 
     override suspend fun getAllProducts(
         limit: Int,
