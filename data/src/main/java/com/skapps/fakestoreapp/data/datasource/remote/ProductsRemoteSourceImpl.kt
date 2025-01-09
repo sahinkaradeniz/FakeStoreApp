@@ -1,4 +1,5 @@
 package com.skapps.fakestoreapp.data.datasource.remote
+import com.skapps.fakestoreapp.data.models.ProductDto
 import com.skapps.fakestoreapp.data.models.ProductsResponseDto
 import com.skapps.fakestoreapp.data.network.api.FakeStoreApi
 import retrofit2.Response
@@ -23,5 +24,9 @@ class ProductsRemoteSourceImpl @Inject constructor(
         skip: Int
     ): Response<ProductsResponseDto> {
         return fakeStoreApi.search(query, limit, skip)
+    }
+
+    override suspend fun getProductById(id: Int): Response<ProductDto> {
+        return fakeStoreApi.getProductById(id)
     }
 }

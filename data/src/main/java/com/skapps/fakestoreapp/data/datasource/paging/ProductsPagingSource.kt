@@ -12,6 +12,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+
 class ProductsPagingSource @AssistedInject constructor(
     @Assisted private val sortType: SortType,
     @Dispatcher(DispatcherType.Io) private val dispatcher: CoroutineDispatcher,

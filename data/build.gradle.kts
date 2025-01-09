@@ -55,13 +55,20 @@ dependencies {
 
     // Testing
     testImplementation(libs.junit)
-    testImplementation("org.mockito:mockito-core:5.12.0")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
-    testImplementation("com.google.truth:truth:1.4.4")
-    testImplementation("io.mockk:mockk:1.13.2")
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.truth)
+    testImplementation(libs.mockk)
+
     // Modules
     implementation(projects.domain)
+
+    // Room
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+    annotationProcessor(libs.room.compiler)
+    implementation(libs.room.runtime)
 
     //Hilt
     implementation(libs.hilt)

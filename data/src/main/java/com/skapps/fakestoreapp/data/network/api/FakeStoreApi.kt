@@ -1,5 +1,6 @@
 package com.skapps.fakestoreapp.data.network.api
 
+import com.skapps.fakestoreapp.data.models.ProductDto
 import com.skapps.fakestoreapp.data.models.ProductsResponseDto
 import retrofit2.Response
 import retrofit2.http.GET
@@ -23,4 +24,8 @@ interface FakeStoreApi {
         @Query("skip") skip: Int
     ): Response<ProductsResponseDto>
 
+    @GET("/products/{id}")
+    suspend fun getProductById(
+        @Query("id") id: Int
+    ): Response<ProductDto>
 }

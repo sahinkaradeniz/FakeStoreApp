@@ -44,5 +44,4 @@ class MainViewModel @Inject constructor(
     override fun onAction(uiAction: MainViewUiState) {
 
     }
-
 }
