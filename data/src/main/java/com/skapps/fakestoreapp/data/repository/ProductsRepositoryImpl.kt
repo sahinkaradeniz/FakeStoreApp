@@ -55,12 +55,12 @@ class ProductsRepositoryImpl @Inject constructor(
         ).flow
     }
 
-    override suspend fun getProductById(id: Int): IResult<ProductEntity, ApiErrorModel> {
+    override suspend fun getProductById(id: String): IResult<ProductEntity, ApiErrorModel> {
         return withContext(dispatcher) {
             when (val result = apiExecutor.execute {
                 remoteSource.getProductById(id)
             }) {
-                is ApiResult.Success -> IResult.Success(result.response?.toEntity())
+                is ApiResult.Success -> IResult.Success(result.response.toEntity())
                 is ApiResult.Error -> parseError<ApiErrorModel>(result)
             }
         }

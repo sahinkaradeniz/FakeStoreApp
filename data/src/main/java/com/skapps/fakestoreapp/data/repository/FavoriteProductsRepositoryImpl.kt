@@ -21,27 +21,27 @@ class FavoriteProductsRepositoryImpl @Inject constructor(
     override suspend fun addProductToFavorites(product: ProductEntity): IResult<FavoritesEntity, ApiErrorModel> =
         withContext(dispatcher) {
             favoritesLocalDataSource.addProductToFavorites(product.toDbModel())
-                .mapSuccess { it?.toEntity() }
+                .mapSuccess { it.toEntity() }
         }
 
     override suspend fun deleteProductFromFavorites(favoritesEntity: FavoritesEntity): IResult<FavoritesEntity, ApiErrorModel> =
         withContext(dispatcher) {
             favoritesLocalDataSource.deleteProductToFavorites(favoritesEntity.toDbModel())
-                .mapSuccess { it?.toEntity() }
+                .mapSuccess { it.toEntity() }
         }
 
 
     override suspend fun getAllFavoriteProducts(): IResult<List<FavoritesEntity>, ApiErrorModel> =
         withContext(dispatcher) {
             favoritesLocalDataSource.getAllProducts()
-                .mapSuccess { it?.map { it.toEntity() } }
+                .mapSuccess { it.map { it.toEntity() } }
         }
 
 
     override suspend fun getFavoriteProductWithId(product: FavoritesEntity): IResult<FavoritesEntity, ApiErrorModel> =
         withContext(dispatcher) {
             favoritesLocalDataSource.getFavoriteProductWithId(product.id)
-                .mapSuccess { it?.toEntity() }
+                .mapSuccess { it.toEntity() }
         }
 
 }

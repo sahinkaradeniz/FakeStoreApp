@@ -53,18 +53,22 @@ dependencies {
     // Compose
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(platform(libs.androidx.compose.bom))
 
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.tooling.preview)
 
     // Module dependencies
     implementation(projects.domain)
-    implementation(projects.core)
     implementation(projects.coreUi)
+    implementation(projects.core)
 
     //Hilt
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+
 
 }

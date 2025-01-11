@@ -34,27 +34,26 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            setContent {
-                FakeStoreAppTheme {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        val navController = rememberNavController()
-                        val uiState by mainViewModel.uiState.collectAsStateWithLifecycle()
+            FakeStoreAppTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    val navController = rememberNavController()
+                    val uiState by mainViewModel.uiState.collectAsStateWithLifecycle()
 
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            AppNavGraph(navController = navController)
-                            if (uiState.isGlobalLoadingVisible) {
-                                FullScreenLoading()
-                            }
-                            if (uiState.isPartialLoadingVisible) {
-                                PartialLoading(uiState.partialLoadingMessages)
-                            }
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        AppNavGraph(navController = navController)
+                        if (uiState.isGlobalLoadingVisible) {
+                            FullScreenLoading()
+                        }
+                        if (uiState.isPartialLoadingVisible) {
+                            PartialLoading(uiState.partialLoadingMessages)
                         }
                     }
                 }
             }
+
         }
     }
 
@@ -74,12 +73,17 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun PartialLoading(message: String?) {
         Box(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(16.dp)
                 .background(Color.Gray.copy(alpha = 0.7f), shape = RoundedCornerShape(8.dp)),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = message ?: "", color = Color.White, style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = message ?: "",
+                color = Color.White,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }

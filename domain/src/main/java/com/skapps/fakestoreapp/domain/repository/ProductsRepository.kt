@@ -18,6 +18,6 @@ interface ProductsRepository {
         params: SearchPagedProductParams
     ): Flow<PagingData<ProductEntity>>
 
-    suspend fun getProductById(id: Int): IResult<ProductEntity,ApiErrorModel>
+    suspend fun getProductById(id: String): IResult<ProductEntity,ApiErrorModel>
 
 }

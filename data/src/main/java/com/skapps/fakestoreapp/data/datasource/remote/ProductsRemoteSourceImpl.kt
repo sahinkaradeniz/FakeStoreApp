@@ -26,7 +26,7 @@ class ProductsRemoteSourceImpl @Inject constructor(
         return fakeStoreApi.search(query, limit, skip)
     }
 
-    override suspend fun getProductById(id: Int): Response<ProductDto> {
+    override suspend fun getProductById(id: String): Response<ProductDto> {
         return fakeStoreApi.getProductById(id)
     }
 }

@@ -8,6 +8,8 @@ import com.skapps.fakestoreapp.domain.usecase.favorites.getAll.GetAllFavoritePro
 import com.skapps.fakestoreapp.domain.usecase.favorites.getAll.GetAllFavoriteProductsUseCaseImpl
 import com.skapps.fakestoreapp.domain.usecase.getpagedproducts.GetPagedProductsUseCase
 import com.skapps.fakestoreapp.domain.usecase.getpagedproducts.GetPagedProductsUseCaseImpl
+import com.skapps.fakestoreapp.domain.usecase.productdetail.GetProductDetailWithIdUseCase
+import com.skapps.fakestoreapp.domain.usecase.productdetail.GetProductDetailWithIdUseCaseImpl
 import com.skapps.fakestoreapp.domain.usecase.searchpagedproducts.SearchPagedProductsUseCase
 import com.skapps.fakestoreapp.domain.usecase.searchpagedproducts.SearchPagedProductsUseCaseImpl
 import dagger.Binds
@@ -51,4 +53,11 @@ abstract class UseCaseModule {
     abstract fun bindDeleteFavoriteProductUseCase(
         deleteFavoriteProductUseCaseImpl: DeleteProductToFavoritesUseCaseImpl
     ): DeleteProductToFavoritesUseCase
+
+
+    @Binds
+    @Singleton
+    abstract fun bindGetProductDetailWithIdUseCase(
+        getProductDetailWithIdUseCaseImpl: GetProductDetailWithIdUseCaseImpl
+    ): GetProductDetailWithIdUseCase
 }

@@ -2,7 +2,10 @@ package com.skapps.fakestoreapp.data.network.apiexecutor
 
 import android.provider.SyncStateContract
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 import java.net.ConnectException
 import java.net.UnknownHostException
@@ -19,9 +22,19 @@ class ApiExecutorImpl @Inject constructor(
             try {
                 val response = call()
                 if (response.isSuccessful) {
-                    ApiResult.Success(
-                        response = response.body()
-                    )
+                    val body = response.body()
+                    if (body != null) {
+                        ApiResult.Success(
+                            response = body
+                        )
+                    } else {
+                        ApiResult.Error(
+                            ApiError.Server(
+                                "Api Executor : Empty response body"
+                                    .toResponseBody(null)
+                            )
+                        )
+                    }
                 } else {
                     if (response.code() == 401) {
                         ApiResult.Error(ApiError.Authentication(response.errorBody()))
@@ -29,7 +42,6 @@ class ApiExecutorImpl @Inject constructor(
                         ApiResult.Error(ApiError.Server(response.errorBody()))
                     }
                 }
-
             } catch (ex: Exception) {
                 if (ex is ConnectException || ex is UnknownHostException) {
                     ApiResult.Error(ApiError.NoInternet(ex.message))

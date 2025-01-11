@@ -4,7 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.skapps.detail.DetailScreen
+import com.skapps.detail.ProductDetailScreen
 import com.skapps.home.HomeScreen
 
 fun NavGraphBuilder.homeScreen(
@@ -28,6 +28,6 @@ fun NavGraphBuilder.detailScreen() {
         )
     ) { backStackEntry ->
         val productId = backStackEntry.arguments?.getString(DetailDestination.productIdArg)
-        DetailScreen(productId = productId)
+        ProductDetailScreen(productId = productId ?: "")
     }
 }

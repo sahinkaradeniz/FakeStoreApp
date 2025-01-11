@@ -4,6 +4,7 @@ import com.skapps.fakestoreapp.data.models.ProductDto
 import com.skapps.fakestoreapp.data.models.ProductsResponseDto
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface FakeStoreApi {
@@ -26,6 +27,6 @@ interface FakeStoreApi {
 
     @GET("/products/{id}")
     suspend fun getProductById(
-        @Query("id") id: Int
+        @Path("id") id: String
     ): Response<ProductDto>
 }
