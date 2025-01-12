@@ -5,6 +5,33 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.skapps.fakestoreapp.coreui.R
+
+
+val poppinsFontFamily = FontFamily(
+    fonts = listOf(
+        androidx.compose.ui.text.font.Font(
+            resId = R.font.poppins,
+            weight = FontWeight.Normal,
+            style = androidx.compose.ui.text.font.FontStyle.Normal
+        ),
+        androidx.compose.ui.text.font.Font(
+            resId = R.font.poppins_medium,
+            weight = FontWeight.Medium,
+            style = androidx.compose.ui.text.font.FontStyle.Normal
+        ),
+        androidx.compose.ui.text.font.Font(
+            resId = R.font.poppins_semibold,
+            weight = FontWeight.SemiBold,
+            style = androidx.compose.ui.text.font.FontStyle.Normal
+        ),
+        androidx.compose.ui.text.font.Font(
+            resId = R.font.poppins_bold,
+            weight = FontWeight.Bold,
+            style = androidx.compose.ui.text.font.FontStyle.Normal
+        )
+    )
+)
 
 val Typography = Typography(
     bodyLarge = TextStyle(
