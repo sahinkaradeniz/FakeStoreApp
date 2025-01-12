@@ -62,9 +62,7 @@ fun ProductDetailScreen(
                 favoriteAction = {
                     viewModel.onAction(
                         ProductDetailUiAction.FavoriteClicked(
-                            context.getString(
-                                R.string.adding_to_favorites
-                            )
+                            "The process is going on now..."
                         )
                     )
                 }

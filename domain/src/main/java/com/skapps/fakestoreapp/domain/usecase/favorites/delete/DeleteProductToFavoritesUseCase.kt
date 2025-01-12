@@ -5,5 +5,5 @@ import com.skapps.fakestoreapp.domain.IResult
 import com.skapps.fakestoreapp.domain.entitiy.favorites.FavoritesEntity
 
 interface DeleteProductToFavoritesUseCase {
-    suspend operator fun invoke(favoritesEntity: FavoritesEntity): IResult<FavoritesEntity, ApiErrorModel>
+    suspend operator fun invoke(id:String): IResult<String, ApiErrorModel>
 }

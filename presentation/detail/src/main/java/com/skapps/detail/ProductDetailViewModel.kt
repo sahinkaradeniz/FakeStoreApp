@@ -8,6 +8,7 @@ import com.skapps.fakestoreapp.domain.entitiy.favorites.FavoritesEntity
 import com.skapps.fakestoreapp.domain.onError
 import com.skapps.fakestoreapp.domain.onSuccess
 import com.skapps.fakestoreapp.domain.usecase.favorites.add.AddProductToFavoritesUseCase
+import com.skapps.fakestoreapp.domain.usecase.favorites.delete.DeleteProductToFavoritesUseCase
 import com.skapps.fakestoreapp.domain.usecase.productdetail.GetProductDetailWithIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,7 +18,8 @@ import javax.inject.Inject
 class ProductDetailViewModel @Inject constructor(
     loadingManager: GlobalLoadingManager,
     private val getProductDetailWithIdUseCase: GetProductDetailWithIdUseCase,
-    private val addProductToFavoritesUseCase: AddProductToFavoritesUseCase
+    private val addProductToFavoritesUseCase: AddProductToFavoritesUseCase,
+    private val deleteProductFromFavoritesUseCase: DeleteProductToFavoritesUseCase
 ) : BaseViewModel<ProductDetailUiState, ProductDetailUiAction, ProductDetailSideEffect>(
     initialState = ProductDetailUiState.EMPTY,
     globalLoadingManager = loadingManager
@@ -31,7 +33,10 @@ class ProductDetailViewModel @Inject constructor(
 
             is ProductDetailUiAction.FavoriteClicked -> {
                 if (uiState.value.isFavorite) {
-
+                    deleteProductFromFavorites(
+                        id = uiState.value.id.toString(),
+                        message = uiAction.resultMessage
+                    )
                 } else {
                     addProductToFavorites(
                         favoritesEntity = uiState.value.toFavoritesEntity(),
@@ -72,7 +77,24 @@ class ProductDetailViewModel @Inject constructor(
                                 copy(isFavorite = true)
                             }
                         }.onError {
-                            emitSideEffect(ProductDetailSideEffect.ShowAddToFavoritesError(it))
+                            emitSideEffect(ProductDetailSideEffect.ShowError(it))
+                        }
+                }, message = message
+            )
+        }
+    }
+
+    private fun deleteProductFromFavorites(id: String, message: String) {
+        viewModelScope.launch {
+            doWithPartialLoading(
+                block = {
+                    deleteProductFromFavoritesUseCase(id = id)
+                        .onSuccess {
+                            updateUiState {
+                                copy(isFavorite = false)
+                            }
+                        }.onError {
+                            emitSideEffect(ProductDetailSideEffect.ShowError(it))
                         }
                 }, message = message
             )

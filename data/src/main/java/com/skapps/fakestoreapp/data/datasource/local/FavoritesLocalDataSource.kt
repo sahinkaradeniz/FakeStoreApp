@@ -8,7 +8,7 @@ interface FavoritesLocalDataSource {
 
     suspend fun addProductToFavorites(favoritesDbModel: FavoritesDbModel): IResult<FavoritesDbModel, ApiErrorModel>
 
-    suspend fun deleteProductToFavorites(favoritesDbModel: FavoritesDbModel): IResult<FavoritesDbModel, ApiErrorModel>
+    suspend fun deleteProductToFavorites(id:String): IResult<String, ApiErrorModel>
 
     suspend fun getAllProducts(): IResult<List<FavoritesDbModel>, ApiErrorModel>
 

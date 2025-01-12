@@ -1,21 +1,21 @@
 package com.skapps.fakestoreapp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -28,20 +28,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
-import com.skapps.fakestoreapp.navigation.AppNavGraph
 import com.skapps.fakestoreapp.coreui.theme.FakeStoreAppTheme
-import com.skapps.fakestoreapp.coreui.theme.Purple40
 import com.skapps.fakestoreapp.coreui.theme.Purple80
-import com.skapps.fakestoreapp.coreui.theme.PurpleGrey80
 import com.skapps.fakestoreapp.coreui.theme.poppinsFontFamily
+import com.skapps.fakestoreapp.navigation.AppNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,41 +52,54 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     val uiState by mainViewModel.uiState.collectAsStateWithLifecycle()
-
                     Box(modifier = Modifier.fillMaxSize()) {
                         AppNavGraph(navController = navController)
+
                         if (uiState.isGlobalLoadingVisible) {
                             FullScreenLoading()
                         }
-                        if (uiState.isPartialLoadingVisible) {
-                            Spacer(modifier = Modifier.height(56.dp))
-                            PartialLoading(uiState.partialLoadingMessages)
-                        }
+                        AnimatedPartialLoading(
+                            isVisible = uiState.isPartialLoadingVisible,
+                            message = uiState.partialLoadingMessages
+                        )
                     }
                 }
             }
-
         }
     }
+}
 
-
-    @Composable
-    fun FullScreenLoading() {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.3f)),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(color = Color.White)
-        }
+@Composable
+fun FullScreenLoading() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.3f)),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(color = Color.White)
     }
+}
 
-    @Composable
-    fun PartialLoading(message: String?) {
+@Composable
+fun AnimatedPartialLoading(
+    isVisible: Boolean,
+    message: String?
+) {
+    AnimatedVisibility(
+        visible = isVisible,
+        enter = slideInVertically(
+            initialOffsetY = { fullHeight -> -fullHeight },
+            animationSpec = tween(durationMillis = 300)
+        ),
+        exit = slideOutVertically(
+            targetOffsetY = { fullHeight -> -fullHeight },
+            animationSpec = tween(durationMillis = 300)
+        ),
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 16.dp)
                 .height(56.dp)
                 .border(
@@ -104,7 +115,7 @@ class MainActivity : ComponentActivity() {
                     .background(Color.White, shape = RoundedCornerShape(8.dp)),
             ) {
                 Text(
-                    text = message ?: "",
+                    text = message.orEmpty(),
                     color = Color.Black,
                     textAlign = TextAlign.Start,
                     fontFamily = poppinsFontFamily,
@@ -123,18 +134,10 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    @Preview
-    @Composable
-    fun PreviewPartialLoading() {
-        FakeStoreAppTheme {
-            Surface {
-                PartialLoading("Loading...")
-            }
-        }
-    }
-
-
 }
+
+
+
 
 
 

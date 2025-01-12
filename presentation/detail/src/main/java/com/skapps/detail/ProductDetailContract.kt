@@ -29,5 +29,4 @@ sealed interface ProductDetailUiAction {
 sealed class ProductDetailSideEffect {
     data class ShowError(val error: UiError<ApiErrorModel>) : ProductDetailSideEffect()
     data class ShowErrorGetProduct(val error: UiError<ApiErrorModel>) : ProductDetailSideEffect()
-    data class ShowAddToFavoritesError(val error: UiError<ApiErrorModel>) : ProductDetailSideEffect()
 }

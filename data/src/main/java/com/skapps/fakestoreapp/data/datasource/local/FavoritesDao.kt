@@ -11,10 +11,10 @@ import com.skapps.fakestoreapp.data.models.favorites.FavoritesDbModel
 interface FavoritesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addProductToFavorites(song: FavoritesDbModel)
+    suspend fun addProductToFavorites(model: FavoritesDbModel)
 
-    @Delete
-    suspend fun deleteProductToFavorites(song: FavoritesDbModel)
+    @Query("DELETE FROM favorites_table WHERE id = :id")
+    suspend fun deleteProductToFavorites(id:String)
 
 
     @Query("select * from favorites_table")

@@ -28,11 +28,11 @@ class FavoritesLocalDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun deleteProductToFavorites(favoritesDbModel: FavoritesDbModel): IResult<FavoritesDbModel, ApiErrorModel> =
+    override suspend fun deleteProductToFavorites(id:String): IResult<String, ApiErrorModel> =
         withContext(dispatcher) {
             try {
-                favoritesDao.deleteProductToFavorites(favoritesDbModel)
-                IResult.Success(favoritesDbModel)
+                favoritesDao.deleteProductToFavorites(id = id)
+                IResult.Success(id)
             } catch (e: Exception) {
                 IResult.Error(
                     UiError.IO(

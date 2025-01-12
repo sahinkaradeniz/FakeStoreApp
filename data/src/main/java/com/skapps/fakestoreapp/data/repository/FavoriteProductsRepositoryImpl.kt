@@ -23,10 +23,10 @@ class FavoriteProductsRepositoryImpl @Inject constructor(
                 .mapSuccess { it.toEntity() }
         }
 
-    override suspend fun deleteProductFromFavorites(favoritesEntity: FavoritesEntity): IResult<FavoritesEntity, ApiErrorModel> =
+    override suspend fun deleteProductFromFavorites(id:String): IResult<String, ApiErrorModel> =
         withContext(dispatcher) {
-            favoritesLocalDataSource.deleteProductToFavorites(favoritesEntity.toDbModel())
-                .mapSuccess { it.toEntity() }
+            favoritesLocalDataSource.deleteProductToFavorites(id = id)
+                .mapSuccess { it }
         }
 
 
