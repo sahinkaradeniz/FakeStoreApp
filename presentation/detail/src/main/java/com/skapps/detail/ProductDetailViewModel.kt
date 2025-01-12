@@ -4,8 +4,10 @@ import androidx.lifecycle.viewModelScope
 import com.skapps.fakestoreapp.core.base.BaseViewModel
 import com.skapps.fakestoreapp.core.loading.GlobalLoadingManager
 import com.skapps.fakestoreapp.domain.entitiy.ProductEntity
+import com.skapps.fakestoreapp.domain.entitiy.favorites.FavoritesEntity
 import com.skapps.fakestoreapp.domain.onError
 import com.skapps.fakestoreapp.domain.onSuccess
+import com.skapps.fakestoreapp.domain.usecase.favorites.add.AddProductToFavoritesUseCase
 import com.skapps.fakestoreapp.domain.usecase.productdetail.GetProductDetailWithIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -14,7 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductDetailViewModel @Inject constructor(
     loadingManager: GlobalLoadingManager,
-    private val getProductDetailWithIdUseCase: GetProductDetailWithIdUseCase
+    private val getProductDetailWithIdUseCase: GetProductDetailWithIdUseCase,
+    private val addProductToFavoritesUseCase: AddProductToFavoritesUseCase
 ) : BaseViewModel<ProductDetailUiState, ProductDetailUiAction, ProductDetailSideEffect>(
     initialState = ProductDetailUiState.EMPTY,
     globalLoadingManager = loadingManager
@@ -25,8 +28,16 @@ class ProductDetailViewModel @Inject constructor(
             is ProductDetailUiAction.LoadProduct -> {
                 getProductWithId(uiAction.productId)
             }
-            is ProductDetailUiAction.FavoriteClicked -> {
 
+            is ProductDetailUiAction.FavoriteClicked -> {
+                if (uiState.value.isFavorite) {
+
+                } else {
+                    addProductToFavorites(
+                        favoritesEntity = uiState.value.toFavoritesEntity(),
+                        message = uiAction.resultMessage
+                    )
+                }
             }
 
             is ProductDetailUiAction.AddToCartClicked -> {
@@ -51,6 +62,23 @@ class ProductDetailViewModel @Inject constructor(
         }
     }
 
+    private fun addProductToFavorites(favoritesEntity: FavoritesEntity, message: String) {
+        viewModelScope.launch {
+            doWithPartialLoading(
+                block = {
+                    addProductToFavoritesUseCase(favoritesEntity)
+                        .onSuccess {
+                            updateUiState {
+                                copy(isFavorite = true)
+                            }
+                        }.onError {
+                            emitSideEffect(ProductDetailSideEffect.ShowAddToFavoritesError(it))
+                        }
+                }, message = message
+            )
+        }
+    }
+
 
     private fun ProductEntity.toUiState(): ProductDetailUiState {
         return ProductDetailUiState(
@@ -63,6 +91,16 @@ class ProductDetailViewModel @Inject constructor(
             discountPercentage = this.discountPercentage,
             rating = this.rating,
             isFavorite = this.isFavorite
+        )
+    }
+
+    private fun ProductDetailUiState.toFavoritesEntity(): FavoritesEntity {
+        return FavoritesEntity(
+            id = this.id,
+            title = this.title,
+            description = this.description,
+            images = this.thumbnail,
+            newPrice = this.price
         )
     }
 }

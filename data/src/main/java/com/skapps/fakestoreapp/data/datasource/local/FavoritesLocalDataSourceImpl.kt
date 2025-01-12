@@ -14,11 +14,11 @@ class FavoritesLocalDataSourceImpl @Inject constructor(
     private val favoritesDao: FavoritesDao,
     @Dispatcher(DispatcherType.Io) private val dispatcher: CoroutineDispatcher
 ) : FavoritesLocalDataSource {
-    override suspend fun addProductToFavorites(song: FavoritesDbModel): IResult<FavoritesDbModel, ApiErrorModel> =
+    override suspend fun addProductToFavorites(favoritesDbModel: FavoritesDbModel): IResult<FavoritesDbModel, ApiErrorModel> =
         withContext(dispatcher) {
             try {
-                favoritesDao.addProductToFavorites(song)
-                IResult.Success(song)
+                favoritesDao.addProductToFavorites(favoritesDbModel)
+                IResult.Success(favoritesDbModel)
             } catch (e: Exception) {
                 IResult.Error(
                     UiError.IO(
@@ -28,11 +28,11 @@ class FavoritesLocalDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun deleteProductToFavorites(song: FavoritesDbModel): IResult<FavoritesDbModel, ApiErrorModel> =
+    override suspend fun deleteProductToFavorites(favoritesDbModel: FavoritesDbModel): IResult<FavoritesDbModel, ApiErrorModel> =
         withContext(dispatcher) {
             try {
-                favoritesDao.deleteProductToFavorites(song)
-                IResult.Success(song)
+                favoritesDao.deleteProductToFavorites(favoritesDbModel)
+                IResult.Success(favoritesDbModel)
             } catch (e: Exception) {
                 IResult.Error(
                     UiError.IO(

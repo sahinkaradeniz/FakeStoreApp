@@ -57,7 +57,7 @@ fun ProductDetailScreen(
                 title = uiState.title,
                 isFavorite = uiState.isFavorite,
                 backAction = {},
-                favoriteAction = {}
+                favoriteAction = {viewModel.onAction(ProductDetailUiAction.FavoriteClicked("Added to favorites 1"))}
             )
         },
         bottomBar = {

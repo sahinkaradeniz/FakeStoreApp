@@ -21,12 +21,13 @@ data class ProductDetailUiState(
 }
 sealed interface ProductDetailUiAction {
     data class LoadProduct(val productId:String) : ProductDetailUiAction
-    data class FavoriteClicked(val isFavorite: Boolean) : ProductDetailUiAction
+    data class FavoriteClicked(val resultMessage:String) : ProductDetailUiAction
     data class AddToCartClicked(val product: ProductEntity) : ProductDetailUiAction
 }
 
 
 sealed class ProductDetailSideEffect {
-    data class ShowError(val message: String) : ProductDetailSideEffect()
+    data class ShowError(val error: UiError<ApiErrorModel>) : ProductDetailSideEffect()
     data class ShowErrorGetProduct(val error: UiError<ApiErrorModel>) : ProductDetailSideEffect()
+    data class ShowAddToFavoritesError(val error: UiError<ApiErrorModel>) : ProductDetailSideEffect()
 }

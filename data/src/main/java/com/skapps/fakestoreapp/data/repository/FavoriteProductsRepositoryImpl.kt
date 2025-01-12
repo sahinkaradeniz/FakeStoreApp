@@ -7,7 +7,6 @@ import com.skapps.fakestoreapp.data.mapper.toDbModel
 import com.skapps.fakestoreapp.data.mapper.toEntity
 import com.skapps.fakestoreapp.domain.ApiErrorModel
 import com.skapps.fakestoreapp.domain.IResult
-import com.skapps.fakestoreapp.domain.entitiy.ProductEntity
 import com.skapps.fakestoreapp.domain.entitiy.favorites.FavoritesEntity
 import com.skapps.fakestoreapp.domain.repository.FavoriteProductsRepository
 import kotlinx.coroutines.CoroutineDispatcher
@@ -18,9 +17,9 @@ class FavoriteProductsRepositoryImpl @Inject constructor(
     private val favoritesLocalDataSource: FavoritesLocalDataSource,
     @Dispatcher(DispatcherType.Io) private val dispatcher: CoroutineDispatcher
 ) : FavoriteProductsRepository {
-    override suspend fun addProductToFavorites(product: ProductEntity): IResult<FavoritesEntity, ApiErrorModel> =
+    override suspend fun addProductToFavorites(favoritesEntity: FavoritesEntity): IResult<FavoritesEntity, ApiErrorModel> =
         withContext(dispatcher) {
-            favoritesLocalDataSource.addProductToFavorites(product.toDbModel())
+            favoritesLocalDataSource.addProductToFavorites(favoritesEntity.toDbModel())
                 .mapSuccess { it.toEntity() }
         }
 
