@@ -1,5 +1,6 @@
 package com.skapps.fakestoreapp.navigation
 
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
@@ -17,7 +18,7 @@ fun NavGraphBuilder.homeScreen(
     }
 }
 
-fun NavGraphBuilder.detailScreen() {
+fun NavGraphBuilder.detailScreen(navController: NavController) {
     composable(
         route = DetailDestination.route,
         arguments = listOf(
@@ -28,6 +29,6 @@ fun NavGraphBuilder.detailScreen() {
         )
     ) { backStackEntry ->
         val productId = backStackEntry.arguments?.getString(DetailDestination.productIdArg)
-        ProductDetailScreen(productId = productId ?: "")
+        ProductDetailScreen(productId = productId ?: "",navController = navController)
     }
 }

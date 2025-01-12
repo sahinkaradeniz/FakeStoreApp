@@ -4,9 +4,11 @@ import androidx.lifecycle.viewModelScope
 import com.skapps.fakestoreapp.core.base.BaseViewModel
 import com.skapps.fakestoreapp.core.loading.GlobalLoadingManager
 import com.skapps.fakestoreapp.domain.entitiy.ProductEntity
+import com.skapps.fakestoreapp.domain.entitiy.basket.BasketProductEntity
 import com.skapps.fakestoreapp.domain.entitiy.favorites.FavoritesEntity
 import com.skapps.fakestoreapp.domain.onError
 import com.skapps.fakestoreapp.domain.onSuccess
+import com.skapps.fakestoreapp.domain.usecase.basket.addorincrement.AddOrIncrementProductUseCase
 import com.skapps.fakestoreapp.domain.usecase.favorites.add.AddProductToFavoritesUseCase
 import com.skapps.fakestoreapp.domain.usecase.favorites.delete.DeleteProductToFavoritesUseCase
 import com.skapps.fakestoreapp.domain.usecase.productdetail.GetProductDetailWithIdUseCase
@@ -19,7 +21,8 @@ class ProductDetailViewModel @Inject constructor(
     loadingManager: GlobalLoadingManager,
     private val getProductDetailWithIdUseCase: GetProductDetailWithIdUseCase,
     private val addProductToFavoritesUseCase: AddProductToFavoritesUseCase,
-    private val deleteProductFromFavoritesUseCase: DeleteProductToFavoritesUseCase
+    private val deleteProductFromFavoritesUseCase: DeleteProductToFavoritesUseCase,
+    private val addOrIncrementProductUseCase: AddOrIncrementProductUseCase
 ) : BaseViewModel<ProductDetailUiState, ProductDetailUiAction, ProductDetailSideEffect>(
     initialState = ProductDetailUiState.EMPTY,
     globalLoadingManager = loadingManager
@@ -35,18 +38,21 @@ class ProductDetailViewModel @Inject constructor(
                 if (uiState.value.isFavorite) {
                     deleteProductFromFavorites(
                         id = uiState.value.id.toString(),
-                        message = uiAction.resultMessage
+                        message = uiAction.loadingMessage
                     )
                 } else {
                     addProductToFavorites(
                         favoritesEntity = uiState.value.toFavoritesEntity(),
-                        message = uiAction.resultMessage
+                        message = uiAction.loadingMessage
                     )
                 }
             }
 
             is ProductDetailUiAction.AddToCartClicked -> {
-
+                addProductToBasket(
+                    product = uiState.value,
+                    message = uiAction.loadingMessage
+                )
             }
         }
     }
@@ -102,6 +108,19 @@ class ProductDetailViewModel @Inject constructor(
     }
 
 
+    private fun addProductToBasket(product:ProductDetailUiState, message: String) {
+        viewModelScope.launch {
+            doWithPartialLoading(
+                block = {
+                    addOrIncrementProductUseCase(product.toBasketModel())
+                        .onError {
+                            emitSideEffect(ProductDetailSideEffect.ShowError(it))
+                        }
+                }, message = message
+            )
+        }
+    }
+
     private fun ProductEntity.toUiState(): ProductDetailUiState {
         return ProductDetailUiState(
             id = this.id,
@@ -125,4 +144,15 @@ class ProductDetailViewModel @Inject constructor(
             newPrice = this.price
         )
     }
+    private fun ProductDetailUiState.toBasketModel(): BasketProductEntity {
+        return BasketProductEntity(
+            id = this.id,
+            title = this.title,
+            image = this.thumbnail,
+            price = this.price,
+            oldPrice = this.oldPrice,
+            quantity = 1
+        )
+    }
+
 }

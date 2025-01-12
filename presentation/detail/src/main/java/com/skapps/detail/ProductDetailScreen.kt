@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.skapps.fakestoreapp.coreui.components.LoadImageFromUrl
 import com.skapps.fakestoreapp.coreui.theme.Purple40
 import com.skapps.fakestoreapp.coreui.theme.Purple80
@@ -45,6 +46,7 @@ import com.skapps.fakestoreapp.coreui.theme.Purple80
 @Composable
 fun ProductDetailScreen(
     productId: String,
+    navController: NavController,
     viewModel: ProductDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -58,7 +60,9 @@ fun ProductDetailScreen(
             TopAppBar(
                 title = uiState.title,
                 isFavorite = uiState.isFavorite,
-                backAction = {},
+                backAction = {
+                    	navController.popBackStack()
+                },
                 favoriteAction = {
                     viewModel.onAction(
                         ProductDetailUiAction.FavoriteClicked(
@@ -69,7 +73,13 @@ fun ProductDetailScreen(
             )
         },
         bottomBar = {
-            AddToCartButton(onClick = {})
+            AddToCartButton(onClick = {
+                viewModel.onAction(
+                    ProductDetailUiAction.AddToCartClicked(
+                        "The product is being added to cart..."
+                    )
+                )
+            })
         }
     ) { innerPadding ->
         Column(

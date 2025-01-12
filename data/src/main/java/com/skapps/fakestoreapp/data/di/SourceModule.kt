@@ -1,7 +1,9 @@
 package com.skapps.fakestoreapp.data.di
 
-import com.skapps.fakestoreapp.data.datasource.local.FavoritesLocalDataSource
-import com.skapps.fakestoreapp.data.datasource.local.FavoritesLocalDataSourceImpl
+import com.skapps.fakestoreapp.data.datasource.local.basket.BasketLocalDataSource
+import com.skapps.fakestoreapp.data.datasource.local.basket.BasketLocalDataSourceImpl
+import com.skapps.fakestoreapp.data.datasource.local.favorites.FavoritesLocalDataSource
+import com.skapps.fakestoreapp.data.datasource.local.favorites.FavoritesLocalDataSourceImpl
 import com.skapps.fakestoreapp.data.datasource.paging.ProductsPagingSource
 import com.skapps.fakestoreapp.data.datasource.paging.SearchProductsPagingSource
 import com.skapps.fakestoreapp.data.datasource.remote.ProductsRemoteSource
@@ -25,6 +27,11 @@ abstract class SourceModule {
     @Binds
     @Singleton
     abstract fun bindFavoritesLocalDataSource(favoritesLocalDataSourceImpl: FavoritesLocalDataSourceImpl): FavoritesLocalDataSource
+
+
+    @Binds
+    @Singleton
+    abstract fun bindBasketLocalDataSource(basketLocalDataSourceImpl: BasketLocalDataSourceImpl): BasketLocalDataSource
 }
 
 @Module

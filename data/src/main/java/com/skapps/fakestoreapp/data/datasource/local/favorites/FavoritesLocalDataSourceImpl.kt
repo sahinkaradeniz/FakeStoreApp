@@ -1,4 +1,4 @@
-package com.skapps.fakestoreapp.data.datasource.local
+package com.skapps.fakestoreapp.data.datasource.local.favorites
 
 import com.skapps.fakestoreapp.data.di.Dispatcher
 import com.skapps.fakestoreapp.data.di.DispatcherType

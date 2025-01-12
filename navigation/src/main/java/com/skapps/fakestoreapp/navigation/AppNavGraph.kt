@@ -15,6 +15,6 @@ fun AppNavGraph(
                 navController.navigate(DetailDestination.createRoute(productId))
             }
         )
-        detailScreen()
+        detailScreen(navController = navController)
     }
 }

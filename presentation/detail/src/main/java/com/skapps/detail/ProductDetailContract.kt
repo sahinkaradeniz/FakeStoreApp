@@ -2,7 +2,6 @@ package com.skapps.detail
 
 import com.skapps.fakestoreapp.domain.ApiErrorModel
 import com.skapps.fakestoreapp.domain.UiError
-import com.skapps.fakestoreapp.domain.entitiy.ProductEntity
 
 data class ProductDetailUiState(
     val id: Int = -1,
@@ -21,8 +20,8 @@ data class ProductDetailUiState(
 }
 sealed interface ProductDetailUiAction {
     data class LoadProduct(val productId:String) : ProductDetailUiAction
-    data class FavoriteClicked(val resultMessage:String) : ProductDetailUiAction
-    data class AddToCartClicked(val product: ProductEntity) : ProductDetailUiAction
+    data class FavoriteClicked(val loadingMessage:String) : ProductDetailUiAction
+    data class AddToCartClicked(val loadingMessage: String) : ProductDetailUiAction
 }
 
 

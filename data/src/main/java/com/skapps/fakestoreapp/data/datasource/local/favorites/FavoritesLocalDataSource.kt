@@ -1,4 +1,4 @@
-package com.skapps.fakestoreapp.data.datasource.local
+package com.skapps.fakestoreapp.data.datasource.local.favorites
 
 import com.skapps.fakestoreapp.data.models.favorites.FavoritesDbModel
 import com.skapps.fakestoreapp.domain.ApiErrorModel

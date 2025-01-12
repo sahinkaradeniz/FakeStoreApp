@@ -1,8 +1,8 @@
-package com.skapps.fakestoreapp.data.di.room
+package com.skapps.fakestoreapp.data.di.room.favorites
 
 import android.content.Context
 import androidx.room.Room
-import com.skapps.fakestoreapp.data.datasource.local.FavoritesDao
+import com.skapps.fakestoreapp.data.datasource.local.favorites.FavoritesDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

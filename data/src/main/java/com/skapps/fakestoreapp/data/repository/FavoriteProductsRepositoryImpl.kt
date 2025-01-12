@@ -1,6 +1,6 @@
 package com.skapps.fakestoreapp.data.repository
 
-import com.skapps.fakestoreapp.data.datasource.local.FavoritesLocalDataSource
+import com.skapps.fakestoreapp.data.datasource.local.favorites.FavoritesLocalDataSource
 import com.skapps.fakestoreapp.data.di.Dispatcher
 import com.skapps.fakestoreapp.data.di.DispatcherType
 import com.skapps.fakestoreapp.data.mapper.toDbModel
