@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +35,7 @@ import androidx.navigation.compose.rememberNavController
 import com.skapps.fakestoreapp.coreui.theme.FakeStoreAppTheme
 import com.skapps.fakestoreapp.coreui.theme.Purple80
 import com.skapps.fakestoreapp.coreui.theme.poppinsFontFamily
+import com.skapps.fakestoreapp.navigation.AppBottomNavBar
 import com.skapps.fakestoreapp.navigation.AppNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -52,17 +54,25 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     val uiState by mainViewModel.uiState.collectAsStateWithLifecycle()
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        AppNavGraph(navController = navController)
 
-                        if (uiState.isGlobalLoadingVisible) {
-                            FullScreenLoading()
+                    Scaffold(
+                        bottomBar = {
+                            AppBottomNavBar(navController = navController)
                         }
-                        AnimatedPartialLoading(
-                            isVisible = uiState.isPartialLoadingVisible,
-                            message = uiState.partialLoadingMessages
-                        )
+                    ) { paddingValues ->
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            AppNavGraph(navController = navController)
+
+                            if (uiState.isGlobalLoadingVisible) {
+                                FullScreenLoading()
+                            }
+                            AnimatedPartialLoading(
+                                isVisible = uiState.isPartialLoadingVisible,
+                                message = uiState.partialLoadingMessages
+                            )
+                        }
                     }
+
                 }
             }
         }

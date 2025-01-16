@@ -16,5 +16,10 @@ fun AppNavGraph(
             }
         )
         detailScreen(navController = navController)
+
+        basketScreen()
+
+        favoriteScreen()
+
     }
 }

@@ -14,3 +14,17 @@ object DetailDestination {
         return "$baseRoute/$productId"
     }
 }
+
+object BasketDestination {
+    const val route = "basket"
+}
+
+object FavoriteDestination {
+    const val route = "favorite"
+}
+
+sealed class BottomNavScreen(val route: String) {
+    object Home : BottomNavScreen(HomeDestination.route)
+    object Basket : BottomNavScreen(BasketDestination.route)
+    object Favorite : BottomNavScreen(FavoriteDestination.route)
+}

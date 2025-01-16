@@ -1,11 +1,13 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kspPlugin)
     alias(libs.plugins.kotlin.compose)
 }
 
 android {
-    namespace = "com.skapps.fakestoreapp.navigation"
+    namespace = "com.skapps.basket"
     compileSdk = 34
 
     defaultConfig {
@@ -31,9 +33,6 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    buildFeatures {
-        compose =  true
-    }
 }
 
 dependencies {
@@ -45,20 +44,27 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-
-    // Module dependencies
-    implementation(projects.presentation.detail)
-    implementation(projects.presentation.home)
-    implementation(projects.presentation.basket)
-    implementation(projects.presentation.favorites)
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
 
     // Compose
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(platform(libs.androidx.compose.bom))
 
-    // Navigation
-    implementation(libs.androidx.navigation.compose)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.tooling.preview)
+
+    // Module dependencies
+    implementation(projects.domain)
+    implementation(projects.coreUi)
+    implementation(projects.core)
+
+    //Hilt
+    implementation(libs.hilt)
+    ksp(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+
 }
