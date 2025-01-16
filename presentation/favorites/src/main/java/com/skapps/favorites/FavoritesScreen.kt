@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.skapps.fakestoreapp.coreui.components.AppTopBar
 import com.skapps.fakestoreapp.coreui.components.LoadImageFromUrl
 import com.skapps.fakestoreapp.coreui.theme.CollectSideEffect
 import com.skapps.fakestoreapp.coreui.theme.Purple40
@@ -69,7 +70,7 @@ fun FavoritesScreen(
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        FavoriteTopBar(
+        AppTopBar(
             title = "FAVORITE"
         )
         Box(
@@ -111,28 +112,7 @@ fun FavoritesScreen(
     }
 }
 
-@Composable
-fun FavoriteTopBar(
-    title: String,
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            modifier = Modifier.padding(vertical = 12.dp),
-            text = title,
-            fontSize = 20.sp,
-            fontFamily = poppinsFontFamily,
-            fontWeight = FontWeight.Medium,
-        )
-    }
-}
 
-/**
- * Grid yapısını burada oluşturuyoruz. 2 sütunlu bir grid için GridCells.Fixed(2) kullanıldı.
- */
 @Composable
 fun FavoriteGrid(
     favorites: List<FavoriteUiModel>,

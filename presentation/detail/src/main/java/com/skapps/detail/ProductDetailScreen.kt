@@ -54,8 +54,7 @@ fun ProductDetailScreen(
     LaunchedEffect(key1 = productId) {
         viewModel.onAction(ProductDetailUiAction.LoadProduct(productId))
     }
-    logError("ProductDetailScreen: $productId")
-    val context = LocalContext.current
+
     val scrollState = rememberScrollState()
     Scaffold(
         topBar = {

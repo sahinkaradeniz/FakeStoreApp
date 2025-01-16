@@ -4,16 +4,16 @@ import com.skapps.fakestoreapp.domain.usecase.basket.addorincrement.AddOrIncreme
 import com.skapps.fakestoreapp.domain.usecase.basket.addorincrement.AddOrIncrementProductUseCaseImpl
 import com.skapps.fakestoreapp.domain.usecase.basket.clear.ClearBasketUseCase
 import com.skapps.fakestoreapp.domain.usecase.basket.clear.ClearBasketUseCaseImpl
-import com.skapps.fakestoreapp.domain.usecase.basket.decrementorremove.DecrementQuantityOrRemoveUseCase
-import com.skapps.fakestoreapp.domain.usecase.basket.decrementorremove.DecrementQuantityOrRemoveUseCaseImpl
-import com.skapps.fakestoreapp.domain.usecase.basket.delete.DeleteProductByIdUseCase
-import com.skapps.fakestoreapp.domain.usecase.basket.delete.DeleteProductByIdUseCaseImpl
+import com.skapps.fakestoreapp.domain.usecase.basket.decrementorremove.DecrementBasketItemUseCase
+import com.skapps.fakestoreapp.domain.usecase.basket.decrementorremove.DecrementBasketItemUseCaseImpl
+import com.skapps.fakestoreapp.domain.usecase.basket.delete.DeleteBasketProductByIdUseCase
+import com.skapps.fakestoreapp.domain.usecase.basket.delete.DeleteBasketProductByIdUseCaseImpl
 import com.skapps.fakestoreapp.domain.usecase.basket.getallonce.GetAllProductsOnceUseCase
 import com.skapps.fakestoreapp.domain.usecase.basket.getallonce.GetAllProductsOnceUseCaseImpl
-import com.skapps.fakestoreapp.domain.usecase.basket.getallproductsflow.GetAllProductsFlowUseCase
-import com.skapps.fakestoreapp.domain.usecase.basket.getallproductsflow.GetAllProductsFlowUseCaseImpl
-import com.skapps.fakestoreapp.domain.usecase.basket.incrementquantity.IncrementQuantityUseCase
-import com.skapps.fakestoreapp.domain.usecase.basket.incrementquantity.IncrementQuantityUseCaseImpl
+import com.skapps.fakestoreapp.domain.usecase.basket.getallproductsflow.GetAllBasketProductsFlowUseCase
+import com.skapps.fakestoreapp.domain.usecase.basket.getallproductsflow.GetAllBasketProductsFlowUseCaseImpl
+import com.skapps.fakestoreapp.domain.usecase.basket.incrementquantity.IncrementBasketItemUseCase
+import com.skapps.fakestoreapp.domain.usecase.basket.incrementquantity.IncrementBasketItemUseCaseImpl
 import com.skapps.fakestoreapp.domain.usecase.basket.quantitiyflow.GetTotalQuantityFlowUseCase
 import com.skapps.fakestoreapp.domain.usecase.basket.quantitiyflow.GetTotalQuantityFlowUseCaseImpl
 import com.skapps.fakestoreapp.domain.usecase.basket.upsert.UpsertProductUseCase
@@ -105,8 +105,8 @@ abstract class UseCaseModule {
     @Binds
     @Singleton
     abstract fun bindDeleteProductByIdUseCase(
-        impl: DeleteProductByIdUseCaseImpl
-    ): DeleteProductByIdUseCase
+        impl: DeleteBasketProductByIdUseCaseImpl
+    ): DeleteBasketProductByIdUseCase
 
     @Binds
     @Singleton
@@ -125,15 +125,15 @@ abstract class UseCaseModule {
     @Binds
     @Singleton
     abstract fun bindIncrementQuantityUseCase(
-        impl: IncrementQuantityUseCaseImpl
-    ): IncrementQuantityUseCase
+        impl: IncrementBasketItemUseCaseImpl
+    ): IncrementBasketItemUseCase
 
 
     @Binds
     @Singleton
     abstract fun bindDecrementQuantityOrRemoveUseCase(
-        impl: DecrementQuantityOrRemoveUseCaseImpl
-    ): DecrementQuantityOrRemoveUseCase
+        impl: DecrementBasketItemUseCaseImpl
+    ): DecrementBasketItemUseCase
 
 
     @Binds
@@ -146,8 +146,8 @@ abstract class UseCaseModule {
     @Binds
     @Singleton
     abstract fun bindGetAllProductsFlowUseCase(
-        impl: GetAllProductsFlowUseCaseImpl
-    ): GetAllProductsFlowUseCase
+        impl: GetAllBasketProductsFlowUseCaseImpl
+    ): GetAllBasketProductsFlowUseCase
 
 
     @Binds

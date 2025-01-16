@@ -1,14 +1,14 @@
-package com.skapps.fakestoreapp.domain.usecase.basket.incrementquantity
+package com.skapps.fakestoreapp.domain.usecase.basket.decrementorremove
 
 import com.skapps.fakestoreapp.domain.ApiErrorModel
 import com.skapps.fakestoreapp.domain.IResult
 import com.skapps.fakestoreapp.domain.repository.BasketRepository
 import javax.inject.Inject
 
-class IncrementQuantityUseCaseImpl @Inject constructor(
+class DecrementBasketItemUseCaseImpl @Inject constructor(
     private val repository: BasketRepository
-) : IncrementQuantityUseCase {
+) : DecrementBasketItemUseCase {
     override suspend fun invoke(id: Int): IResult<Unit, ApiErrorModel> {
-        return repository.incrementQuantity(id)
+        return repository.decrementQuantityOrRemove(id)
     }
 }

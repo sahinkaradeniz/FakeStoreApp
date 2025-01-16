@@ -5,9 +5,9 @@ import com.skapps.fakestoreapp.domain.repository.BasketRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetAllProductsFlowUseCaseImpl @Inject constructor(
+class GetAllBasketProductsFlowUseCaseImpl @Inject constructor(
     private val repository: BasketRepository
-) : GetAllProductsFlowUseCase {
+) : GetAllBasketProductsFlowUseCase {
     override fun invoke(): Flow<List<BasketProductEntity>> {
         return repository.getAllProductsFlow()
     }
