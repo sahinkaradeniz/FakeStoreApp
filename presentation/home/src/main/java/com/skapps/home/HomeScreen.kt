@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,23 +19,15 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -101,9 +92,6 @@ fun HomeScreen(
             clearQuery = {
                 viewModel.onClearSearch()
             },
-            onFilterClicked = {
-
-            },
             onSortClicked = {
                 viewModel.onSortClicked()
             },
@@ -128,7 +116,6 @@ fun SearchViewPreview() {
         query = "Search Query",
         onQueryChange = {},
         clearQuery = {},
-        onFilterClicked = {},
         onSortClicked = {},
         isSearchMode = false
     )
@@ -139,7 +126,6 @@ fun SearchFilterSortBar(
     query: String,
     onQueryChange: (String) -> Unit,
     clearQuery: () -> Unit,
-    onFilterClicked: () -> Unit,
     onSortClicked: () -> Unit,
     isSearchMode: Boolean
 ) {
@@ -165,20 +151,6 @@ fun SearchFilterSortBar(
             clearContentDescription = stringResource(R.string.clear)
         )
         if (!isSearchMode) {
-            IconTextButton(
-                label = stringResource(R.string.filter),
-                icon = Icons.Default.Menu,
-                onClick = { onFilterClicked() },
-                spacing = 4.dp,
-                modifier = Modifier
-                    .height(48.dp)
-                    .wrapContentWidth()
-                    .padding(top = 4.dp)
-                    .align(Alignment.CenterVertically),
-                textSize = 12.sp,
-                iconSize = 16.dp
-            )
-            Spacer(modifier = Modifier.width(8.dp))
             IconTextButton(
                 label = stringResource(R.string.sort),
                 icon = Icons.Default.KeyboardArrowDown,
