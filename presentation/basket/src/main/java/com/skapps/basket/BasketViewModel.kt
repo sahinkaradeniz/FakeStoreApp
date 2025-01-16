@@ -24,109 +24,73 @@ class BasketViewModel @Inject constructor(
     private val incrementProductUseCase: IncrementBasketItemUseCase,
     private val deleteProductFromBasketUseCase: DeleteBasketProductByIdUseCase
 ) : BaseViewModel<BasketUiState, BasketUiAction, BasketSideEffect>(
-    initialState = BasketUiState.EMPTY,
-    globalLoadingManager = loadingManager
+    BasketUiState.EMPTY, loadingManager
 ) {
-
     override fun onAction(uiAction: BasketUiAction) {
         when (uiAction) {
-            is BasketUiAction.LoadBasket -> {
-                loadBasket()
-            }
+            is BasketUiAction.LoadBasket -> loadBasket()
+            is BasketUiAction.IncreaseQuantity -> incrementItem(uiAction.itemId)
+            is BasketUiAction.DecreaseQuantity -> decrementItem(uiAction.itemId)
+            is BasketUiAction.RemoveItem -> removeItem(uiAction.itemId, uiAction.loadingMessage)
+            is BasketUiAction.Checkout -> viewModelScope.launch { emitSideEffect(BasketSideEffect.CheckoutSuccess) }
+        }
+    }
 
-            is BasketUiAction.IncreaseQuantity -> {
-                incrementItem(uiAction.itemId, uiAction.loadingMessage)
-            }
-
-            is BasketUiAction.DecreaseQuantity -> {
-                decrementItem(uiAction.itemId, uiAction.loadingMessage)
-            }
-
-            is BasketUiAction.RemoveItem -> {
-                removeItem(uiAction.itemId, uiAction.loadingMessage)
-            }
-
-            is BasketUiAction.Checkout -> {
-                viewModelScope.launch {
-                    emitSideEffect(BasketSideEffect.CheckoutSuccess)
+    private fun decrementItem(itemId: Int) {
+        viewModelScope.launch {
+            doWithLocalLoading({
+                decrementBasketItemUseCase(itemId).onSuccess { loadBasket() }.onErrorWithMessage {
+                    emitSideEffect(BasketSideEffect.ShowError(it))
                 }
-            }
+            }, viewKey =  quantityLoadingKey+"$itemId")
         }
     }
 
-    private fun decrementItem(itemId: Int, message: String) {
+    private fun incrementItem(itemId: Int) {
         viewModelScope.launch {
-            doWithPartialLoading(
-                block = {
-                    decrementBasketItemUseCase(itemId).onSuccess {
-                        loadBasket()
-                    }.onErrorWithMessage {
-                        emitSideEffect(BasketSideEffect.ShowError(it))
-                    }
-                },
-                message = message
-            )
-        }
-    }
-
-    private fun incrementItem(itemId: Int, message: String) {
-        viewModelScope.launch {
-            doWithPartialLoading(
-                block = {
-                    incrementProductUseCase(itemId).onSuccess {
-                        loadBasket()
-                    }.onErrorWithMessage {
-                        emitSideEffect(BasketSideEffect.ShowError(it))
-                    }
-                },
-                message = message
-            )
+            doWithLocalLoading({
+                incrementProductUseCase(itemId).onSuccess { loadBasket() }.onErrorWithMessage {
+                    emitSideEffect(BasketSideEffect.ShowError(it))
+                }
+            }, viewKey = quantityLoadingKey+"$itemId")
         }
     }
 
     private fun loadBasket() {
         viewModelScope.launch {
-                getBasketItemsUseCase().distinctUntilChanged().catch {
-                    emitSideEffect(BasketSideEffect.ShowError(it.message ?: "Error"))
-                }.collectLatest {
-                    val uiList = it.map { basketEntity ->
-                        BasketItemUiModel(
-                            id = basketEntity.id,
-                            title = basketEntity.title,
-                            image = basketEntity.image,
-                            price = basketEntity.price,
-                            oldPrice = basketEntity.oldPrice,
-                            quantity = basketEntity.quantity
-                        )
-                    }
-                    updateUiState {
-                        val totalPrice = uiList.sumOf { it.price * it.quantity }
-                        val totalOldPrice = uiList.sumOf { it.oldPrice * it.quantity }
-                        copy(
-                            items = uiList,
-                            totalPrice = totalPrice,
-                            totalDiscount = (totalOldPrice - totalPrice).coerceAtLeast(0.0),
-                            total = totalPrice - totalDiscount,
-                            isEmpty = uiList.isEmpty()
-                        )
-                    }
+            getBasketItemsUseCase().distinctUntilChanged().catch {
+                emitSideEffect(BasketSideEffect.ShowError(it.message ?: "Error"))
+            }.collectLatest {
+                val uiList = it.map { e ->
+                    BasketItemUiModel(e.id, e.title, e.image, e.price, e.oldPrice, e.quantity)
                 }
+                val totalPrice = uiList.sumOf { i -> i.price * i.quantity }
+                val totalOld = uiList.sumOf { i -> i.oldPrice * i.quantity }
+                val discount = (totalOld - totalPrice).coerceAtLeast(0.0)
+                updateUiState {
+                    copy(
+                        items = uiList,
+                        totalPrice = totalPrice,
+                        totalDiscount = discount,
+                        total = totalPrice - discount,
+                        isEmpty = uiList.isEmpty()
+                    )
+                }
+            }
         }
     }
 
-
     private fun removeItem(itemId: Int, message: String) {
         viewModelScope.launch {
-            doWithPartialLoading(
-                block = {
-                    deleteProductFromBasketUseCase(itemId).onSuccess {
-                        loadBasket()
-                    }.onErrorWithMessage {
-                        emitSideEffect(BasketSideEffect.ShowError(it))
-                    }
-                },
-                message = message
-            )
+            doWithPartialLoading({
+                deleteProductFromBasketUseCase(itemId).onSuccess { loadBasket() }.onErrorWithMessage {
+                    emitSideEffect(BasketSideEffect.ShowError(it))
+                }
+            }, message = message)
         }
+    }
+
+    companion object {
+        const val quantityLoadingKey = "BasketItem"
     }
 }

@@ -14,8 +14,8 @@ data class BasketUiState(
 
 sealed class BasketUiAction {
     data object LoadBasket : BasketUiAction()
-    data class IncreaseQuantity(val itemId: Int, val loadingMessage: String) : BasketUiAction()
-    data class DecreaseQuantity(val itemId: Int, val loadingMessage: String) : BasketUiAction()
+    data class IncreaseQuantity(val itemId: Int) : BasketUiAction()
+    data class DecreaseQuantity(val itemId: Int) : BasketUiAction()
     data class RemoveItem(val itemId: Int, val loadingMessage: String) : BasketUiAction()
     data object Checkout : BasketUiAction()
 }
