@@ -26,11 +26,7 @@ import org.junit.Test
 import retrofit2.Response
 
 
-/**
- * ProductsPagingSource sınıfının unit testleri.
- * Bu test sınıfı, sayfalama ve sıralama mantığını,
- * hata durumlarını ve başarılı senaryoları test eder.
- */
+
 class ProductsPagingSourceTest {
 
     // Test edilecek sınıfın bağımlılıklarını mockluyoruz
@@ -256,13 +252,9 @@ class ProductsPagingSourceTest {
         assertEquals("RefreshKey orta sayfa olmalı", 2, refreshKey)
     }
 
-    /**
-     * Farklı sıralama tiplerinin testi.
-     * Her sıralama tipi için API parametrelerinin doğruluğu kontrol edilir.
-     */
+
     @Test
     fun `load should handle different sort types correctly`() = runTest {
-        // ARRANGE
         val sortTypes = listOf(
             SortType.TITLE_ASC to ("title" to "asc"),
             SortType.TITLE_DESC to ("title" to "desc"),
@@ -279,7 +271,6 @@ class ProductsPagingSourceTest {
         )
 
         for ((sortType, expectedSort) in sortTypes) {
-            // Her sıralama tipi için yeni instance
             pagingSource = ProductsPagingSource(
                 sortType = sortType,
                 productsRemoteSource = mockRemoteSource,
@@ -290,7 +281,6 @@ class ProductsPagingSourceTest {
                 mockRemoteSource.getAllProducts(any(), any(), any(), any())
             } returns Response.success(responseDto)
 
-            // ACT
             val params = PagingSource.LoadParams.Refresh(
                 key = 1,
                 loadSize = 20,
@@ -298,9 +288,8 @@ class ProductsPagingSourceTest {
             )
             val result = pagingSource.load(params)
 
-            // ASSERT
             assertTrue(
-                "Sonuç Page tipinde olmalı",
+                "Result must be in Page type",
                 result is PagingSource.LoadResult.Page
             )
 

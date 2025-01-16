@@ -15,16 +15,9 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-/**
- * NetworkModule provides network-related objects for dependency injection.
- */
 object NetworkModule {
 
-    /**
-     * Provides the HttpLoggingInterceptor.
-     *
-     * @return The HttpLoggingInterceptor instance.
-     */
+
     @Provides
     @Singleton
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
@@ -37,12 +30,6 @@ object NetworkModule {
         }
     }
 
-    /**
-     * Provides the OkHttpClient.
-     *
-     * @param loggingInterceptor The HttpLoggingInterceptor instance.
-     * @return The OkHttpClient instance.
-     */
     @Provides
     @Singleton
     fun provideOkHttpClient(
@@ -53,12 +40,7 @@ object NetworkModule {
             .build()
     }
 
-    /**
-     * Provides the FakeStoreApi.
-     *
-     * @param okHttpClient The OkHttpClient instance.
-     * @return The FakeStoreApi instance.
-     */
+
     @Provides
     @Singleton
     fun provideFakeStoreApi(

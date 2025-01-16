@@ -38,7 +38,6 @@ class FakeStoreApiTest {
 
     @Test
     fun `getAllProducts returns successful response`() = runBlocking {
-        // -- Arrange --
         val mockJson = """
             {
               "products": [
@@ -60,7 +59,6 @@ class FakeStoreApiTest {
                 .setBody(mockJson)
         )
 
-        // -- Act --
         val response = api.getAllProducts(
             limit = 10,
             skip = 1,
@@ -68,29 +66,25 @@ class FakeStoreApiTest {
             order = null
         )
 
-        // -- Assert --
-        // JUnit: assertTrue(response.isSuccessful)
+
         assertThat(response.isSuccessful).isTrue()
 
-        // JUnit: assertNotNull(response.body())
         assertThat(response.body()).isNotNull()
 
         val productsResponseDto = response.body()
 
-        // JUnit: assertEquals(1, productsResponseDto?.total)
+
         assertThat(productsResponseDto?.total).isEqualTo(1)
 
-        // JUnit: assertEquals(1, productsResponseDto?.products?.size)
         assertThat(productsResponseDto?.products?.size).isEqualTo(1)
 
         val product = productsResponseDto?.products?.first()
-        // JUnit: assertEquals(1, product?.id)
+
         assertThat(product?.id).isEqualTo(1)
-        // JUnit: assertEquals("Test Product", product?.title)
+
         assertThat(product?.title).isEqualTo("Test Product")
 
-        // JUnit: assertEquals(99.99, product?.price ?: 0.0, 0.001)
-        // Truth (double approx comparison):
+
         assertThat(product?.price ?: 0.0)
             .isWithin(0.001)
             .of(99.99)
@@ -125,10 +119,8 @@ class FakeStoreApiTest {
                 .setBody(mockJson)
         )
 
-        // -- Act --
         val response = api.getAllProducts(limit = 10, skip = 1, sortBy = null, order = null)
 
-        // -- Assert --
         assertThat(response.isSuccessful).isTrue()
         val productsResponseDto = response.body()
         assertThat(productsResponseDto).isNotNull()
@@ -153,27 +145,22 @@ class FakeStoreApiTest {
 
     @Test
     fun `getAllProducts returns 404 error`() = runBlocking {
-        // -- Arrange --
         mockWebServer.enqueue(
             MockResponse()
                 .setResponseCode(404)
                 .setBody("")
         )
 
-        // -- Act --
         val response = api.getAllProducts(limit = 10, skip = 0, sortBy = null, order = null)
 
-        // -- Assert --
-        // JUnit: assertTrue(!response.isSuccessful)
+
         assertThat(response.isSuccessful).isFalse()
 
-        // JUnit: assertEquals(null, response.body())
         assertThat(response.body()).isNull()
     }
 
     @Test
     fun `getAllProducts returns empty product list`() = runBlocking {
-        // -- Arrange --
         val mockJson = """
             {
               "products": [],
@@ -189,18 +176,15 @@ class FakeStoreApiTest {
                 .setBody(mockJson)
         )
 
-        // -- Act --
         val response = api.getAllProducts(limit = 10, skip = 0, sortBy = null, order = null)
 
-        // -- Assert --
         assertThat(response.isSuccessful).isTrue()
         val productsResponseDto = response.body()
         assertThat(productsResponseDto).isNotNull()
 
-        // JUnit: assertEquals(0, productsResponseDto?.total)
+
         assertThat(productsResponseDto?.total).isEqualTo(0)
-        // JUnit: assertEquals(0, productsResponseDto?.products?.size)
-        // Alternatif: assertThat(productsResponseDto?.products).isEmpty()
+
         assertThat(productsResponseDto?.products?.size).isEqualTo(0)
     }
 
@@ -228,24 +212,20 @@ class FakeStoreApiTest {
                 .setBody(mockJson)
         )
 
-        // -- Act --
         val response = api.getAllProducts(limit = 10, skip = 0, sortBy = null, order = null)
 
-        // -- Assert --
         assertThat(response.isSuccessful).isTrue()
         val productsResponseDto = response.body()
         assertThat(productsResponseDto).isNotNull()
 
-        // JUnit: assertEquals(1, productsResponseDto?.total)
+
         assertThat(productsResponseDto?.total).isEqualTo(1)
-        // JUnit: assertEquals(1, productsResponseDto?.products?.size)
         assertThat(productsResponseDto?.products?.size).isEqualTo(1)
 
         val product = productsResponseDto?.products?.first()
         assertThat(product?.id).isEqualTo(10)
         assertThat(product?.title).isEqualTo("Null Price Product")
 
-        // JUnit: assertEquals(0.0, product?.price ?: 0.0, 0.001)
         assertThat(product?.price ?: 0.0)
             .isWithin(0.001)
             .of(0.0)

@@ -1,10 +1,7 @@
 package com.skapps.fakestoreapp.data.network.apiexecutor
 
-import android.provider.SyncStateContract
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 import java.net.ConnectException

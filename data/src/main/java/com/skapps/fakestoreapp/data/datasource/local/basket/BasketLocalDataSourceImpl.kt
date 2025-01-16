@@ -103,7 +103,6 @@ class BasketLocalDataSourceImpl @Inject constructor(
     override suspend fun decrementQuantityOrRemove(id: Int): IResult<Unit, ApiErrorModel> =
         withContext(dispatcher) {
             try {
-                // quantity = quantity - 1, eğer 0’a düştüyse ilgili ürünü sil
                 basketDao.decrementQuantityOrRemove(id)
                 IResult.Success(Unit)
             } catch (e: Exception) {
