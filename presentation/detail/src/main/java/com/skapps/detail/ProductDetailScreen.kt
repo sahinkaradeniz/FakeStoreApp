@@ -42,6 +42,7 @@ import androidx.navigation.NavController
 import com.skapps.fakestoreapp.coreui.components.LoadImageFromUrl
 import com.skapps.fakestoreapp.coreui.theme.Purple40
 import com.skapps.fakestoreapp.coreui.theme.Purple80
+import com.skapps.fakestoreapp.coreui.theme.logError
 
 @Composable
 fun ProductDetailScreen(
@@ -53,12 +54,13 @@ fun ProductDetailScreen(
     LaunchedEffect(key1 = productId) {
         viewModel.onAction(ProductDetailUiAction.LoadProduct(productId))
     }
+    logError("ProductDetailScreen: $productId")
     val context = LocalContext.current
     val scrollState = rememberScrollState()
     Scaffold(
         topBar = {
             TopAppBar(
-                title = uiState.title,
+                title = uiState.product.title,
                 isFavorite = uiState.isFavorite,
                 backAction = {
                     	navController.popBackStack()
@@ -88,12 +90,12 @@ fun ProductDetailScreen(
                 .padding(innerPadding)
                 .verticalScroll(scrollState)
         ) {
-            ProductImage(imageUrl = uiState.thumbnail)
+            ProductImage(imageUrl = uiState.product.thumbnail)
             DetailContent(
-                title = uiState.title,
-                price = uiState.price,
-                oldPrice = uiState.oldPrice,
-                description = uiState.description
+                title = uiState.product.title,
+                price = uiState.product.price,
+                oldPrice = uiState.product.oldPrice,
+                description = uiState.product.description
             )
         }
     }

@@ -21,7 +21,9 @@ fun AppNavGraph(
         basketScreen()
 
         favoriteScreen(
-
+            onNavigateToDetail = { productId ->
+                navController.navigate(DetailDestination.createRoute(productId))
+            }
         )
 
     }

@@ -11,6 +11,7 @@ import com.skapps.fakestoreapp.domain.onSuccess
 import com.skapps.fakestoreapp.domain.usecase.basket.addorincrement.AddOrIncrementProductUseCase
 import com.skapps.fakestoreapp.domain.usecase.favorites.add.AddProductToFavoritesUseCase
 import com.skapps.fakestoreapp.domain.usecase.favorites.delete.DeleteProductToFavoritesUseCase
+import com.skapps.fakestoreapp.domain.usecase.favorites.isFavorite.IsProductFavoriteUseCase
 import com.skapps.fakestoreapp.domain.usecase.productdetail.GetProductDetailWithIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -22,7 +23,8 @@ class ProductDetailViewModel @Inject constructor(
     private val getProductDetailWithIdUseCase: GetProductDetailWithIdUseCase,
     private val addProductToFavoritesUseCase: AddProductToFavoritesUseCase,
     private val deleteProductFromFavoritesUseCase: DeleteProductToFavoritesUseCase,
-    private val addOrIncrementProductUseCase: AddOrIncrementProductUseCase
+    private val addOrIncrementProductUseCase: AddOrIncrementProductUseCase,
+    private val isProductFavoriteUseCase: IsProductFavoriteUseCase
 ) : BaseViewModel<ProductDetailUiState, ProductDetailUiAction, ProductDetailSideEffect>(
     initialState = ProductDetailUiState.EMPTY,
     globalLoadingManager = loadingManager
@@ -32,17 +34,18 @@ class ProductDetailViewModel @Inject constructor(
         when (uiAction) {
             is ProductDetailUiAction.LoadProduct -> {
                 getProductWithId(uiAction.productId)
+                isProductFavorite(uiAction.productId)
             }
 
             is ProductDetailUiAction.FavoriteClicked -> {
                 if (uiState.value.isFavorite) {
                     deleteProductFromFavorites(
-                        id = uiState.value.id.toString(),
+                        id = uiState.value.product.id.toString(),
                         message = uiAction.loadingMessage
                     )
                 } else {
                     addProductToFavorites(
-                        favoritesEntity = uiState.value.toFavoritesEntity(),
+                        favoritesEntity = uiState.value.product.toFavoritesEntity(),
                         message = uiAction.loadingMessage
                     )
                 }
@@ -50,9 +53,23 @@ class ProductDetailViewModel @Inject constructor(
 
             is ProductDetailUiAction.AddToCartClicked -> {
                 addProductToBasket(
-                    product = uiState.value,
+                    product = uiState.value.product,
                     message = uiAction.loadingMessage
                 )
+            }
+        }
+    }
+
+    private fun isProductFavorite(productId: String) {
+        viewModelScope.launch {
+            doWithGlobalLoading {
+                isProductFavoriteUseCase(productId.toInt()).onSuccess {
+                    updateUiState {
+                        copy(isFavorite = it)
+                    }
+                }.onError {
+                    emitSideEffect(ProductDetailSideEffect.ShowErrorGetProduct(it))
+                }
             }
         }
     }
@@ -64,7 +81,7 @@ class ProductDetailViewModel @Inject constructor(
                     it.toUiState()
                 }.onSuccess {
                     updateUiState {
-                        it
+                        copy(product = it)
                     }
                 }.onError {
                     emitSideEffect(ProductDetailSideEffect.ShowErrorGetProduct(it))
@@ -108,7 +125,7 @@ class ProductDetailViewModel @Inject constructor(
     }
 
 
-    private fun addProductToBasket(product:ProductDetailUiState, message: String) {
+    private fun addProductToBasket(product:ProductDetailUiModel, message: String) {
         viewModelScope.launch {
             doWithPartialLoading(
                 block = {
@@ -121,8 +138,8 @@ class ProductDetailViewModel @Inject constructor(
         }
     }
 
-    private fun ProductEntity.toUiState(): ProductDetailUiState {
-        return ProductDetailUiState(
+    private fun ProductEntity.toUiState(): ProductDetailUiModel {
+        return ProductDetailUiModel(
             id = this.id,
             title = this.title,
             description = this.description,
@@ -131,20 +148,20 @@ class ProductDetailViewModel @Inject constructor(
             oldPrice = this.oldPrice,
             discountPercentage = this.discountPercentage,
             rating = this.rating,
-            isFavorite = this.isFavorite
         )
     }
 
-    private fun ProductDetailUiState.toFavoritesEntity(): FavoritesEntity {
+    private fun ProductDetailUiModel.toFavoritesEntity(): FavoritesEntity {
         return FavoritesEntity(
             id = this.id,
             title = this.title,
             description = this.description,
             images = this.thumbnail,
-            newPrice = this.price
+            newPrice = this.price,
+            oldPrice = this.oldPrice
         )
     }
-    private fun ProductDetailUiState.toBasketModel(): BasketProductEntity {
+    private fun ProductDetailUiModel.toBasketModel(): BasketProductEntity {
         return BasketProductEntity(
             id = this.id,
             title = this.title,

@@ -24,4 +24,6 @@ interface FavoritesDao {
     @Query("select * from favorites_table where :id")
     suspend fun getFavoriteProductWithId(id:Int):FavoritesDbModel
 
+    @Query("SELECT EXISTS(SELECT 1 FROM favorites_table WHERE id = :id)")
+    suspend fun isProductFavorite(id: Int): Boolean
 }

@@ -41,10 +41,12 @@ fun NavGraphBuilder.basketScreen() {
     }
 }
 
-fun NavGraphBuilder.favoriteScreen() {
+fun NavGraphBuilder.favoriteScreen(
+    onNavigateToDetail: (String) -> Unit
+) {
     composable(route = FavoriteDestination.route) {
         FavoritesScreen(
-            onNavigateToProductDetail = { /*TODO*/ },
+            onNavigateToProductDetail = onNavigateToDetail
         )
     }
 }

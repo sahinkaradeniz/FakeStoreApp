@@ -22,9 +22,3 @@ object BasketDestination {
 object FavoriteDestination {
     const val route = "favorite"
 }
-
-sealed class BottomNavScreen(val route: String) {
-    object Home : BottomNavScreen(HomeDestination.route)
-    object Basket : BottomNavScreen(BasketDestination.route)
-    object Favorite : BottomNavScreen(FavoriteDestination.route)
-}

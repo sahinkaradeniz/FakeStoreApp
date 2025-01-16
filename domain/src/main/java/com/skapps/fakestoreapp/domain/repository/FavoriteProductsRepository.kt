@@ -11,4 +11,5 @@ interface FavoriteProductsRepository {
     suspend fun deleteProductFromFavorites(id:String): IResult<String, ApiErrorModel>
     suspend fun getAllFavoriteProducts(): Flow<List<FavoritesEntity>>
     suspend fun getFavoriteProductWithId(product: FavoritesEntity): IResult<FavoritesEntity, ApiErrorModel>
+    suspend fun isProductFavorite(id: Int): IResult<Boolean, ApiErrorModel>
 }

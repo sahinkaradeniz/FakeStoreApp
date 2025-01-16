@@ -56,7 +56,6 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     val uiState by mainViewModel.uiState.collectAsStateWithLifecycle()
-
                     Scaffold(
                         bottomBar = {
                             AppBottomNavBar(navController = navController)
@@ -66,7 +65,6 @@ class MainActivity : ComponentActivity() {
                             bottom = paddingValues.calculateBottomPadding()
                         ).navigationBarsPadding()) {
                             AppNavGraph(navController = navController)
-
                             if (uiState.isGlobalLoadingVisible) {
                                 FullScreenLoading()
                             }

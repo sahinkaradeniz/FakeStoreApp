@@ -10,7 +10,8 @@ fun FavoritesDbModel.toEntity(): FavoritesEntity {
         title = this.title,
         description = this.description,
         images = this.images,
-        newPrice = this.newPrice
+        newPrice = this.newPrice,
+        oldPrice = this.oldPrice
     )
 }
 
@@ -21,7 +22,8 @@ fun FavoritesEntity.toDbModel(): FavoritesDbModel {
         description = this.description,
         images = this.images,
         newPrice = this.newPrice,
-        title = this.title
+        title = this.title,
+        oldPrice = this.oldPrice
     )
 }
 
@@ -32,6 +34,7 @@ fun ProductEntity.toDbModel(): FavoritesDbModel {
         description = this.description,
         images = this.images.firstOrNull() ?: "",
         newPrice = this.newPrice,
-        title = this.title
+        title = this.title,
+        oldPrice = this.oldPrice
     )
 }

@@ -6,4 +6,5 @@ data class FavoritesEntity(
     val images: String,
     val newPrice: Double,
     val title: String,
+    val oldPrice: Double,
 )

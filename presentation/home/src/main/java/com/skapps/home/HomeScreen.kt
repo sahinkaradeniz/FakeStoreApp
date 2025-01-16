@@ -190,13 +190,12 @@ fun ProductList(lazyPagingItems: LazyPagingItems<ProductEntity>, onItemClicked: 
                     lazyPagingItems[index]?.let { item ->
                         ProductItem(
                             productEntity = item,
-                            onItemClicked = { itemIndex ->
-                                onItemClicked(lazyPagingItems[itemIndex]?.id)
+                            onItemClicked = { productId ->
+                                onItemClicked(productId)
                             }
                         )
                     }
                 }
-
                 lazyPagingItems.apply {
                     when (loadState.append) {
                         is LoadState.Loading -> {

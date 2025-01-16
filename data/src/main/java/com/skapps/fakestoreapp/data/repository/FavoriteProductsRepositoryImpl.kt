@@ -5,7 +5,6 @@ import com.skapps.fakestoreapp.data.di.Dispatcher
 import com.skapps.fakestoreapp.data.di.DispatcherType
 import com.skapps.fakestoreapp.data.mapper.toDbModel
 import com.skapps.fakestoreapp.data.mapper.toEntity
-import com.skapps.fakestoreapp.data.models.favorites.FavoritesDbModel
 import com.skapps.fakestoreapp.domain.ApiErrorModel
 import com.skapps.fakestoreapp.domain.IResult
 import com.skapps.fakestoreapp.domain.entitiy.favorites.FavoritesEntity
@@ -26,7 +25,7 @@ class FavoriteProductsRepositoryImpl @Inject constructor(
                 .mapSuccess { it.toEntity() }
         }
 
-    override suspend fun deleteProductFromFavorites(id:String): IResult<String, ApiErrorModel> =
+    override suspend fun deleteProductFromFavorites(id: String): IResult<String, ApiErrorModel> =
         withContext(dispatcher) {
             favoritesLocalDataSource.deleteProductToFavorites(id = id)
                 .mapSuccess { it }
@@ -46,4 +45,8 @@ class FavoriteProductsRepositoryImpl @Inject constructor(
                 .mapSuccess { it.toEntity() }
         }
 
+    override suspend fun isProductFavorite(id: Int): IResult<Boolean, ApiErrorModel> =
+        withContext(dispatcher) {
+            favoritesLocalDataSource.isProductFavorite(id)
+        }
 }

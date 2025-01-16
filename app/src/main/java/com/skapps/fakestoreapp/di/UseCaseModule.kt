@@ -24,6 +24,8 @@ import com.skapps.fakestoreapp.domain.usecase.favorites.delete.DeleteProductToFa
 import com.skapps.fakestoreapp.domain.usecase.favorites.delete.DeleteProductToFavoritesUseCaseImpl
 import com.skapps.fakestoreapp.domain.usecase.favorites.getAll.GetAllFavoriteProductsUseCase
 import com.skapps.fakestoreapp.domain.usecase.favorites.getAll.GetAllFavoriteProductsUseCaseImpl
+import com.skapps.fakestoreapp.domain.usecase.favorites.isFavorite.IsProductFavoriteUseCase
+import com.skapps.fakestoreapp.domain.usecase.favorites.isFavorite.IsProductFavoriteUseCaseImpl
 import com.skapps.fakestoreapp.domain.usecase.getpagedproducts.GetPagedProductsUseCase
 import com.skapps.fakestoreapp.domain.usecase.getpagedproducts.GetPagedProductsUseCaseImpl
 import com.skapps.fakestoreapp.domain.usecase.productdetail.GetProductDetailWithIdUseCase
@@ -84,6 +86,11 @@ abstract class UseCaseModule {
         impl: DeleteProductToFavoritesUseCaseImpl
     ): DeleteProductToFavoritesUseCase
 
+    @Binds
+    @Singleton
+    abstract fun bindIsProductFavoriteUseCase(
+        impl: IsProductFavoriteUseCaseImpl
+    ): IsProductFavoriteUseCase
 
     /**
      *  BASKET

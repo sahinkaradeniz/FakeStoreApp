@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
@@ -79,6 +80,21 @@ fun FavoritesScreen(
                         Toast.LENGTH_LONG
                     ).show()
                 }
+
+                is FavoritesSideEffect.ShowErrorAddToCart -> {
+                    Toast.makeText(
+                        context,
+                        effect.error,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                FavoritesSideEffect.ShowSuccessAddToCart -> {
+                    Toast.makeText(
+                        context,
+                        "Product added to cart",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
     )
@@ -113,6 +129,14 @@ fun FavoritesScreen(
                             id = id.toString()
                         )
                     )
+                },
+                addToCart = { item ->
+                    viewModel.onAction(
+                        FavoritesUiAction.AddToCartClicked(
+                            loadingMessage = "The product is being added to cart...",
+                           item = item
+                        )
+                    )
                 }
             )
         }
@@ -143,7 +167,8 @@ fun FavoriteTopBar(
 fun FavoriteList(
     favorites: List<FavoriteUiModel>,
     onItemClicked: (Int) -> Unit,
-    onFavoriteClicked: (Int) -> Unit
+    onFavoriteClicked: (Int) -> Unit,
+    addToCart: (FavoriteUiModel) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -156,7 +181,8 @@ fun FavoriteList(
             FavoriteItem(
                 favoriteItem = item,
                 onItemClicked = { onItemClicked(item.id) },
-                onFavoriteClicked = { onFavoriteClicked(item.id) }
+                onFavoriteClicked = { onFavoriteClicked(item.id) },
+                addToCart = { addToCart(item) }
             )
         }
     }
@@ -166,7 +192,8 @@ fun FavoriteList(
 fun FavoriteItem(
     favoriteItem: FavoriteUiModel,
     onItemClicked: () -> Unit,
-    onFavoriteClicked: (Int) -> Unit
+    onFavoriteClicked: (Int) -> Unit,
+    addToCart: (Int) -> Unit
 ) {
 
     Card(
@@ -212,12 +239,26 @@ fun FavoriteItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "${favoriteItem.price} TL",
-                    fontSize = 14.sp,
-                    color = Purple40
-                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                ){
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = "${favoriteItem.price} TL",
+                        fontSize = 14.sp,
+                        color = Purple40
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        tint = Color.Black,
+                        contentDescription = "Add Icon",
+                        modifier = Modifier.clickable {
+                            addToCart(favoriteItem.id)
+                        }
+                    )
+                }
             }
 
             Box(

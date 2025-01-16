@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.skapps.fakestoreapp.core.base.BaseViewModel
 import com.skapps.fakestoreapp.core.loading.GlobalLoadingManager
+import com.skapps.fakestoreapp.coreui.theme.logError
 import com.skapps.fakestoreapp.domain.entitiy.GetPagedProductsParams
 import com.skapps.fakestoreapp.domain.entitiy.SearchPagedProductParams
 import com.skapps.fakestoreapp.domain.entitiy.SortType

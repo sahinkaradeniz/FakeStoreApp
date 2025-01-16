@@ -14,4 +14,6 @@ interface FavoritesLocalDataSource {
     suspend fun getAllProducts(): Flow<List<FavoritesDbModel>>
 
     suspend fun getFavoriteProductWithId(id: Int): IResult<FavoritesDbModel, ApiErrorModel>
+
+    suspend fun isProductFavorite(id: Int): IResult<Boolean, ApiErrorModel>
 }

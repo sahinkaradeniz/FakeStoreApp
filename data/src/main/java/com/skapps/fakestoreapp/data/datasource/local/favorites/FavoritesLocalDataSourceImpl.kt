@@ -60,4 +60,18 @@ class FavoritesLocalDataSourceImpl @Inject constructor(
                 )
             }
         }
+
+    override suspend fun isProductFavorite(id: Int): IResult<Boolean, ApiErrorModel> {
+        return withContext(dispatcher) {
+            try {
+                IResult.Success(favoritesDao.isProductFavorite(id))
+            } catch (e: Exception) {
+                IResult.Error(
+                    UiError.IO(
+                        e.message ?: "An error occurred while checking if product is favorite"
+                    )
+                )
+            }
+        }
+    }
 }
