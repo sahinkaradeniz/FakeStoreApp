@@ -3,19 +3,10 @@ package com.skapps.favorites
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -56,44 +47,20 @@ fun FavoritesScreen(
                 is FavoritesSideEffect.NavigateToProductDetail -> {
                     onNavigateToProductDetail(effect.id)
                 }
-
                 is FavoritesSideEffect.ShowErrorGetFavorites -> {
-                    Toast.makeText(
-                        context,
-                        effect.error,
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(context, effect.error, Toast.LENGTH_LONG).show()
                 }
-
                 is FavoritesSideEffect.ShowErrorDeleteFavorites -> {
-                    Toast.makeText(
-                        context,
-                        effect.error,
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(context, effect.error, Toast.LENGTH_LONG).show()
                 }
-
                 is FavoritesSideEffect.ShowSuccessDeleteFavorites -> {
-                    Toast.makeText(
-                        context,
-                        "Product removed from favorites",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(context, "Product removed from favorites", Toast.LENGTH_LONG).show()
                 }
-
                 is FavoritesSideEffect.ShowErrorAddToCart -> {
-                    Toast.makeText(
-                        context,
-                        effect.error,
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(context, effect.error, Toast.LENGTH_LONG).show()
                 }
                 FavoritesSideEffect.ShowSuccessAddToCart -> {
-                    Toast.makeText(
-                        context,
-                        "Product added to cart",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(context, "Product added to cart", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -103,7 +70,7 @@ fun FavoritesScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         FavoriteTopBar(
-            title = "FAVORITES"
+            title = "FAVORITE"
         )
         Box(
             modifier = Modifier
@@ -116,29 +83,30 @@ fun FavoritesScreen(
                     fontSize = 20.sp,
                     modifier = Modifier.align(Alignment.Center)
                 )
+            } else {
+                FavoriteGrid(
+                    favorites = uiState.favorites,
+                    onItemClicked = { productId ->
+                        viewModel.onAction(FavoritesUiAction.ProductClicked(productId.toString()))
+                    },
+                    onFavoriteClicked = { id ->
+                        viewModel.onAction(
+                            FavoritesUiAction.FavoriteButtonClicked(
+                                loadingMessage = "The process of changing favorites...",
+                                id = id.toString()
+                            )
+                        )
+                    },
+                    addToCart = { item ->
+                        viewModel.onAction(
+                            FavoritesUiAction.AddToCartClicked(
+                                loadingMessage = "The product is being added to cart...",
+                                item = item
+                            )
+                        )
+                    }
+                )
             }
-            FavoriteList(
-                favorites = uiState.favorites,
-                onItemClicked = { productId ->
-                    viewModel.onAction(FavoritesUiAction.ProductClicked(productId.toString()))
-                },
-                onFavoriteClicked = { id ->
-                    viewModel.onAction(
-                        FavoritesUiAction.FavoriteButtonClicked(
-                            loadingMessage = "The process of changing favorites...",
-                            id = id.toString()
-                        )
-                    )
-                },
-                addToCart = { item ->
-                    viewModel.onAction(
-                        FavoritesUiAction.AddToCartClicked(
-                            loadingMessage = "The product is being added to cart...",
-                           item = item
-                        )
-                    )
-                }
-            )
         }
     }
 }
@@ -153,8 +121,7 @@ fun FavoriteTopBar(
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            modifier = Modifier
-                .padding(vertical = 12.dp),
+            modifier = Modifier.padding(vertical = 12.dp),
             text = title,
             fontSize = 20.sp,
             fontFamily = poppinsFontFamily,
@@ -163,21 +130,24 @@ fun FavoriteTopBar(
     }
 }
 
+/**
+ * Grid yapısını burada oluşturuyoruz. 2 sütunlu bir grid için GridCells.Fixed(2) kullanıldı.
+ */
 @Composable
-fun FavoriteList(
+fun FavoriteGrid(
     favorites: List<FavoriteUiModel>,
     onItemClicked: (Int) -> Unit,
     onFavoriteClicked: (Int) -> Unit,
     addToCart: (FavoriteUiModel) -> Unit
 ) {
-    LazyColumn(
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Transparent),
-        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 8.dp)
+        contentPadding = PaddingValues(8.dp)
     ) {
-        items(favorites.size) { index ->
-            val item = favorites[index]
+        items(favorites) { item ->
             FavoriteItem(
                 favoriteItem = item,
                 onItemClicked = { onItemClicked(item.id) },
@@ -195,85 +165,85 @@ fun FavoriteItem(
     onFavoriteClicked: (Int) -> Unit,
     addToCart: (Int) -> Unit
 ) {
-
     Card(
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(12.dp),
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp)
+            .padding(8.dp)
             .clickable { onItemClicked() },
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.White)
-                .padding(8.dp)
         ) {
-            LoadImageFromUrl(
-                imageUrl = favoriteItem.thumbnail,
-                modifier = Modifier
-                    .size(64.dp)
-                    .padding(4.dp)
-            )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(vertical = 4.dp),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = favoriteItem.title,
-                    fontSize = 16.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = favoriteItem.description,
-                    fontSize = 12.sp,
-                    color = Color.Gray,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                Row (
-                    modifier = Modifier.fillMaxWidth(),
-                ){
-                    Text(
-                        modifier = Modifier.weight(1f),
-                        text = "${favoriteItem.price} TL",
-                        fontSize = 14.sp,
-                        color = Purple40
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        tint = Color.Black,
-                        contentDescription = "Add Icon",
-                        modifier = Modifier.clickable {
-                            addToCart(favoriteItem.id)
-                        }
-                    )
-                }
-            }
-
+            // Üst kısımda resmi ve favori (kalp) ikonunu üst- sağda göstermek için Box kullandık
             Box(
                 modifier = Modifier
-                    .size(32.dp)
-                    .clickable {
-                        onFavoriteClicked(
-                            favoriteItem.id
-                        )
-                    }
+                    .fillMaxWidth()
+                    .height(140.dp) // Resmin yüksekliği
             ) {
+                LoadImageFromUrl(
+                    imageUrl = favoriteItem.thumbnail,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                )
                 Icon(
                     imageVector = if (favoriteItem.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     tint = if (favoriteItem.isFavorite) Color.Red else Color.Black,
-                    contentDescription = "Favorite Icon"
+                    contentDescription = "Favorite Icon",
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .size(24.dp)
+                        .clickable {
+                            onFavoriteClicked(favoriteItem.id)
+                        }
+                )
+            }
+
+            // Ürün başlık ve açıklaması
+            Text(
+                text = favoriteItem.title,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+            Text(
+                text = favoriteItem.description,
+                fontSize = 12.sp,
+                color = Color.Gray,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "${favoriteItem.price} TL",
+                    fontSize = 14.sp,
+                    color = Purple40,
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    tint = Color.Black,
+                    contentDescription = "Add Icon",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            addToCart(favoriteItem.id)
+                        }
                 )
             }
         }
