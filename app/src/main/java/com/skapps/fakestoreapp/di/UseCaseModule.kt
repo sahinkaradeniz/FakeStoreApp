@@ -14,8 +14,8 @@ import com.skapps.fakestoreapp.domain.usecase.basket.getallproductsflow.GetAllBa
 import com.skapps.fakestoreapp.domain.usecase.basket.getallproductsflow.GetAllBasketProductsFlowUseCaseImpl
 import com.skapps.fakestoreapp.domain.usecase.basket.incrementquantity.IncrementBasketItemUseCase
 import com.skapps.fakestoreapp.domain.usecase.basket.incrementquantity.IncrementBasketItemUseCaseImpl
-import com.skapps.fakestoreapp.domain.usecase.basket.quantitiyflow.GetTotalQuantityFlowUseCase
-import com.skapps.fakestoreapp.domain.usecase.basket.quantitiyflow.GetTotalQuantityFlowUseCaseImpl
+import com.skapps.fakestoreapp.domain.usecase.basket.quantitiyflow.GetTotalBasketQuantityFlowUseCase
+import com.skapps.fakestoreapp.domain.usecase.basket.quantitiyflow.GetTotalBasketBasketQuantityFlowUseCaseImpl
 import com.skapps.fakestoreapp.domain.usecase.basket.upsert.UpsertProductUseCase
 import com.skapps.fakestoreapp.domain.usecase.basket.upsert.UpsertProductUseCaseImpl
 import com.skapps.fakestoreapp.domain.usecase.favorites.add.AddProductToFavoritesUseCase
@@ -139,8 +139,8 @@ abstract class UseCaseModule {
     @Binds
     @Singleton
     abstract fun bindGetTotalQuantityFlowUseCase(
-        impl: GetTotalQuantityFlowUseCaseImpl
-    ): GetTotalQuantityFlowUseCase
+        impl: GetTotalBasketBasketQuantityFlowUseCaseImpl
+    ): GetTotalBasketQuantityFlowUseCase
 
 
     @Binds

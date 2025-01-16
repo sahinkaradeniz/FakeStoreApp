@@ -4,6 +4,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -14,7 +16,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
-fun AppBottomNavBar(navController: NavController) {
+fun AppBottomNavBar(navController: NavController, basketCount: Int) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     NavigationBar {
@@ -33,8 +35,18 @@ fun AppBottomNavBar(navController: NavController) {
         NavigationBarItem(
             selected = currentRoute == BasketDestination.route,
             onClick = { navController.navigate(BasketDestination.route) },
-            icon = { Icon(Icons.Default.ShoppingCart, contentDescription = "Basket") },
-            label = { Text(text = "Basket") }
+            icon = {
+                BadgedBox(
+                    badge = {
+                        if (basketCount > 0) {
+                            Badge { Text(basketCount.toString()) }
+                        }
+                    }
+                ) {
+                    Icon(Icons.Default.ShoppingCart, contentDescription = "Basket")
+                }
+            },
+            label = { Text("Basket") }
         )
     }
 }

@@ -1,25 +1,28 @@
 package com.skapps.fakestoreapp
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.skapps.fakestoreapp.core.base.BaseViewModel
 import com.skapps.fakestoreapp.core.loading.GlobalLoadingManager
 import com.skapps.fakestoreapp.core.loading.LoadingType
-import com.skapps.fakestoreapp.coreui.theme.logError
+import com.skapps.fakestoreapp.domain.usecase.basket.quantitiyflow.GetTotalBasketQuantityFlowUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val globalLoadingManager: GlobalLoadingManager
-) : BaseViewModel<MainViewUiState, MainViewUiState, MainSideEffect>(
+    private val globalLoadingManager: GlobalLoadingManager,
+    private val getTotalBasketQuantityFlowUseCase: GetTotalBasketQuantityFlowUseCase
+) : BaseViewModel<MainViewUiState, MainUiActions, MainSideEffect>(
     initialState = MainViewUiState(),
     globalLoadingManager = globalLoadingManager
 ) {
     init {
         observeLoadingStates()
+        onAction(MainUiActions.LoadData)
     }
 
     private fun observeLoadingStates() {
@@ -41,23 +44,26 @@ class MainViewModel @Inject constructor(
             }
         }
     }
-    override fun onAction(uiAction: MainViewUiState) {
 
+
+
+    override fun onAction(uiAction: MainUiActions) {
+       when (uiAction) {
+           MainUiActions.LoadData -> {
+               loadBasketCount()
+           }
+       }
     }
 
-    private fun test(){
+    private fun loadBasketCount() {
         viewModelScope.launch {
-            globalLoadingManager.activeLoadings.collect { activeLoadings ->
-                val isMyListLoadingActive = LoadingType.Local("MyList") in activeLoadings
-
-                if (isMyListLoadingActive) {
-                    // showMyListLoading()
-                } else {
-                    // hideMyListLoading()
+            getTotalBasketQuantityFlowUseCase().distinctUntilChanged().collectLatest {
+                updateUiState {
+                    copy(
+                        basketCount = it ?: 0
+                    )
                 }
             }
         }
-
-
     }
 }

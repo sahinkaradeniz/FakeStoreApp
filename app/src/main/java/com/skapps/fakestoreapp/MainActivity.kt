@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
                     val uiState by mainViewModel.uiState.collectAsStateWithLifecycle()
                     Scaffold(
                         bottomBar = {
-                            AppBottomNavBar(navController = navController)
+                            AppBottomNavBar(navController = navController, basketCount = uiState.basketCount)
                         }
                     ) { paddingValues ->
                         Box(modifier = Modifier.fillMaxSize().padding(
