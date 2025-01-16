@@ -53,7 +53,7 @@ import com.skapps.fakestoreapp.coreui.theme.CollectSideEffect
 import com.skapps.fakestoreapp.coreui.theme.Purple80
 
 @Composable
-fun BasketScreen(viewModel: BasketViewModel = hiltViewModel()) {
+fun BasketScreen(viewModel: BasketViewModel = hiltViewModel(),onNavigateToCheckout: () -> Unit) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val activeLoadings by viewModel.activeLoadings.collectAsState()
@@ -62,11 +62,9 @@ fun BasketScreen(viewModel: BasketViewModel = hiltViewModel()) {
             is BasketSideEffect.ShowError -> Toast.makeText(context, it.message, Toast.LENGTH_LONG)
                 .show()
 
-            BasketSideEffect.CheckoutSuccess -> Toast.makeText(
-                context,
-                "Checkout successful!",
-                Toast.LENGTH_LONG
-            ).show()
+            BasketSideEffect.NavigateCheckoutScreen -> {
+                onNavigateToCheckout()
+            }
         }
     }
     LaunchedEffect(Unit) { viewModel.onAction(BasketUiAction.LoadBasket) }
@@ -237,7 +235,7 @@ fun BasketSummary(price: Double, discount: Double, total: Double, onCheckoutClic
                 .padding(16.dp)
                 .height(50.dp),
             shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Purple80)
+            colors = ButtonDefaults.buttonColors(containerColor = Purple80),
         ) {
             Text("CHECKOUT", fontSize = 16.sp, color = Color.Black)
         }

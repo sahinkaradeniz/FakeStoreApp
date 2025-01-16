@@ -22,7 +22,7 @@ sealed class BasketUiAction {
 
 sealed class BasketSideEffect {
     data class ShowError(val message: String) : BasketSideEffect()
-    data object CheckoutSuccess : BasketSideEffect()
+    data object NavigateCheckoutScreen : BasketSideEffect()
 }
 
 data class BasketItemUiModel(

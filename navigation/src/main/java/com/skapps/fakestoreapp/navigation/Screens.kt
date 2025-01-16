@@ -1,5 +1,6 @@
 package com.skapps.fakestoreapp.navigation
 
+import com.skapps.checkout.CheckoutScreen
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -35,9 +36,13 @@ fun NavGraphBuilder.detailScreen(navController: NavController) {
     }
 }
 
-fun NavGraphBuilder.basketScreen() {
+fun NavGraphBuilder.basketScreen(
+    onNavigateToCheckout: () -> Unit
+) {
     composable(route = BasketDestination.route) {
-        BasketScreen()
+        BasketScreen(
+            onNavigateToCheckout = onNavigateToCheckout
+        )
     }
 }
 
@@ -48,5 +53,17 @@ fun NavGraphBuilder.favoriteScreen(
         FavoritesScreen(
             onNavigateToProductDetail = onNavigateToDetail
         )
+    }
+}
+
+fun NavGraphBuilder.checkoutScreen(
+    onNavigateToHome: () -> Unit,
+    onNavigateToBasket: () -> Unit
+) {
+    composable(route = CheckoutDestination.route) {
+         CheckoutScreen(
+             finish = onNavigateToHome,
+                onBack = onNavigateToBasket
+         )
     }
 }

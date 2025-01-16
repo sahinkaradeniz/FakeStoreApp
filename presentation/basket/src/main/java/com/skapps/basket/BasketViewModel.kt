@@ -32,7 +32,7 @@ class BasketViewModel @Inject constructor(
             is BasketUiAction.IncreaseQuantity -> incrementItem(uiAction.itemId)
             is BasketUiAction.DecreaseQuantity -> decrementItem(uiAction.itemId)
             is BasketUiAction.RemoveItem -> removeItem(uiAction.itemId, uiAction.loadingMessage)
-            is BasketUiAction.Checkout -> viewModelScope.launch { emitSideEffect(BasketSideEffect.CheckoutSuccess) }
+            is BasketUiAction.Checkout -> viewModelScope.launch { emitSideEffect(BasketSideEffect.NavigateCheckoutScreen) }
         }
     }
 

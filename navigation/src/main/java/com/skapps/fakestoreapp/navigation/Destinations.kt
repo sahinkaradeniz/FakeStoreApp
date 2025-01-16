@@ -22,3 +22,8 @@ object BasketDestination {
 object FavoriteDestination {
     const val route = "favorite"
 }
+
+
+object CheckoutDestination {
+    const val route = "checkout"
+}

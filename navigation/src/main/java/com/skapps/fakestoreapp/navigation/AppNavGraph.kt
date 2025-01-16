@@ -18,7 +18,11 @@ fun AppNavGraph(
         )
         detailScreen(navController = navController)
 
-        basketScreen()
+        basketScreen(
+            onNavigateToCheckout = {
+                navController.navigate(CheckoutDestination.route)
+            }
+        )
 
         favoriteScreen(
             onNavigateToDetail = { productId ->
@@ -26,5 +30,17 @@ fun AppNavGraph(
             }
         )
 
+        checkoutScreen(
+            onNavigateToHome = {
+                navController.navigate(HomeDestination.route) {
+                    popUpTo(HomeDestination.route) {
+                        inclusive = true
+                    }
+                }
+            },
+            onNavigateToBasket = {
+                navController.navigate(BasketDestination.route)
+            }
+        )
     }
 }
