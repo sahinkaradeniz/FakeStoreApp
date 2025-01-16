@@ -5,11 +5,14 @@ import com.skapps.fakestoreapp.data.di.Dispatcher
 import com.skapps.fakestoreapp.data.di.DispatcherType
 import com.skapps.fakestoreapp.data.mapper.toDbModel
 import com.skapps.fakestoreapp.data.mapper.toEntity
+import com.skapps.fakestoreapp.data.models.favorites.FavoritesDbModel
 import com.skapps.fakestoreapp.domain.ApiErrorModel
 import com.skapps.fakestoreapp.domain.IResult
 import com.skapps.fakestoreapp.domain.entitiy.favorites.FavoritesEntity
 import com.skapps.fakestoreapp.domain.repository.FavoriteProductsRepository
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -30,10 +33,10 @@ class FavoriteProductsRepositoryImpl @Inject constructor(
         }
 
 
-    override suspend fun getAllFavoriteProducts(): IResult<List<FavoritesEntity>, ApiErrorModel> =
+    override suspend fun getAllFavoriteProducts(): Flow<List<FavoritesEntity>> =
         withContext(dispatcher) {
-            favoritesLocalDataSource.getAllProducts()
-                .mapSuccess { it.map { it.toEntity() } }
+            favoritesLocalDataSource.getAllProducts().map { it.map { it.toEntity() } }
+
         }
 
 

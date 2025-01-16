@@ -7,6 +7,7 @@ import com.skapps.fakestoreapp.domain.ApiErrorModel
 import com.skapps.fakestoreapp.domain.IResult
 import com.skapps.fakestoreapp.domain.UiError
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -42,17 +43,9 @@ class FavoritesLocalDataSourceImpl @Inject constructor(
             }
         }
 
-    override suspend fun getAllProducts(): IResult<List<FavoritesDbModel>, ApiErrorModel> =
+    override suspend fun getAllProducts(): Flow<List<FavoritesDbModel>> =
         withContext(dispatcher) {
-            try {
-                IResult.Success(favoritesDao.getAllProducts())
-            } catch (e: Exception) {
-                IResult.Error(
-                    UiError.IO(
-                        e.message ?: "An error occurred while getting all products from favorites"
-                    )
-                )
-            }
+            favoritesDao.getAllProducts()
         }
 
     override suspend fun getFavoriteProductWithId(id: Int): IResult<FavoritesDbModel, ApiErrorModel> =

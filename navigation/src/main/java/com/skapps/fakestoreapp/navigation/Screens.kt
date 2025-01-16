@@ -31,7 +31,7 @@ fun NavGraphBuilder.detailScreen(navController: NavController) {
         )
     ) { backStackEntry ->
         val productId = backStackEntry.arguments?.getString(DetailDestination.productIdArg)
-        ProductDetailScreen(productId = productId ?: "",navController = navController)
+        ProductDetailScreen(productId = productId ?: "", navController = navController)
     }
 }
 
@@ -43,6 +43,8 @@ fun NavGraphBuilder.basketScreen() {
 
 fun NavGraphBuilder.favoriteScreen() {
     composable(route = FavoriteDestination.route) {
-        FavoritesScreen()
+        FavoritesScreen(
+            onNavigateToProductDetail = { /*TODO*/ },
+        )
     }
 }

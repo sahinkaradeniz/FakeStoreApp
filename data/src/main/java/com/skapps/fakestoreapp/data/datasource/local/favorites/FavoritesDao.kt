@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.skapps.fakestoreapp.data.models.favorites.FavoritesDbModel
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoritesDao {
@@ -17,7 +18,7 @@ interface FavoritesDao {
 
 
     @Query("select * from favorites_table")
-    suspend fun getAllProducts():List<FavoritesDbModel>
+    fun getAllProducts(): Flow<List<FavoritesDbModel>>
 
 
     @Query("select * from favorites_table where :id")

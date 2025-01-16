@@ -3,6 +3,7 @@ package com.skapps.fakestoreapp.data.datasource.local.favorites
 import com.skapps.fakestoreapp.data.models.favorites.FavoritesDbModel
 import com.skapps.fakestoreapp.domain.ApiErrorModel
 import com.skapps.fakestoreapp.domain.IResult
+import kotlinx.coroutines.flow.Flow
 
 interface FavoritesLocalDataSource {
 
@@ -10,7 +11,7 @@ interface FavoritesLocalDataSource {
 
     suspend fun deleteProductToFavorites(id:String): IResult<String, ApiErrorModel>
 
-    suspend fun getAllProducts(): IResult<List<FavoritesDbModel>, ApiErrorModel>
+    suspend fun getAllProducts(): Flow<List<FavoritesDbModel>>
 
     suspend fun getFavoriteProductWithId(id: Int): IResult<FavoritesDbModel, ApiErrorModel>
 }

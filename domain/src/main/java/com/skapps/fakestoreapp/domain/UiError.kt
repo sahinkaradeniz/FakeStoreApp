@@ -9,3 +9,5 @@ sealed class UiError<out T> {
 
     data class IO(val message: String? = null) : UiError<Nothing>()
 }
+
+
