@@ -44,4 +44,20 @@ class MainViewModel @Inject constructor(
     override fun onAction(uiAction: MainViewUiState) {
 
     }
+
+    private fun test(){
+        viewModelScope.launch {
+            globalLoadingManager.activeLoadings.collect { activeLoadings ->
+                val isMyListLoadingActive = LoadingType.Local("MyList") in activeLoadings
+
+                if (isMyListLoadingActive) {
+                    // showMyListLoading()
+                } else {
+                    // hideMyListLoading()
+                }
+            }
+        }
+
+
+    }
 }
